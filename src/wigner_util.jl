@@ -84,9 +84,8 @@ function gen_wigner_bin_path(
     x_range::AbstractRange,
     p_range::AbstractRange,
 )
-    path = datadep"SqState"
     bin_path = joinpath(
-        path,
+        mkpath(joinpath(datadep_root(), "wigner_function")),
         "W " *
         "m=$(m_dim) n=$(n_dim) " *
         "x=$(range2str(x_range)) p=$(range2str(p_range)).bin"

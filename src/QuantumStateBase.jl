@@ -30,4 +30,5 @@ module QuantumStateBase
 
     # wigner
     include("wigner_util.jl")
+    include("wigner.jl")
 end

@@ -22,4 +22,5 @@ Base.:(≈)(s1::StateMatrix, s2::StateMatrix) = (s1.𝛒 ≈ s2.𝛒) && (s1.dim
 
     # wigner
     include("wigner_util.jl")
+    include("wigner.jl")
 end
