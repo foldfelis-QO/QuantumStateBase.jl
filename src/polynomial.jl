@@ -18,3 +18,18 @@ function laguerre(n::Integer, α::Integer, x::T) where {T<:Real}
 end
 
 laguerre(n::Integer, α::Integer) = x -> laguerre(n, α, x)
+
+# function hermite(n::T, x::Real) where {T <: Integer}
+#     result = 0
+#     for k in 0:floor(T, n/2)
+#         coeff = (-1) ^ k *
+#             2 ^ (n-2k) *
+#             factorial(n) / (factorial(k)*factorial(n-2k))
+
+#         x_power = x^(n-2k)
+
+#         result += coeff * x_power
+#     end
+
+#     return result
+# end
