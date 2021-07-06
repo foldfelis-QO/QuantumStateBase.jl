@@ -17,5 +17,7 @@ module QuantumStateBase
 
     datadep_root() = datadep"QuantumStateBase"
 
+    include("polynomial.jl")
     include("state/state.jl")
+
 end
