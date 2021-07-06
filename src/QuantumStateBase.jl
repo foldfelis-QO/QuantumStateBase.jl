@@ -32,4 +32,5 @@ module QuantumStateBase
 
     # pdf of quadrature
     include("quadrature_pdf.jl")
+    include("sampler.jl")
 end
