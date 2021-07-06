@@ -3,6 +3,9 @@ uuid = "73ce9c4f-35d1-4161-b9e6-26915895bfed"
 authors = ["JingYu Ning <foldfelis@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
+
 [compat]
 julia = "1.6"
 
