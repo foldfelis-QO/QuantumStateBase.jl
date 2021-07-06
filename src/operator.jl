@@ -128,13 +128,13 @@ end
 
 # |θ, x⟩ = ∑ₙ |n⟩ ⟨n|θ, x⟩ = ∑ₙ ψₙ(θ, x) |n⟩
 # ⟨n|θ, x⟩ = ψₙ(θ, x) = exp(im n θ) (2/π)^(1/4) exp(-x^2) Hₙ(√2 x)/√(2^n n!)
-# coeff_ψₓ = (2/π)^(1/4)/√(2^n n!)
-# ψₓ = coeff_ψₓ(n) exp(im n θ) exp(-x^2) Hₙ(√2 x)
-calc_coeff_ψₙ(n::BigInt) = (n/π)^(1/4) / sqrt(2^n * factorial(n))
-COEFF_ψₓ = [calc_coeff_ψₙ(big(n)) for n in 0:499]
+# coeff_ψₙ = (2/π)^(1/4)/√(2^n n!)
+# ψₙ = coeff_ψₙ(n) exp(im n θ) exp(-x^2) Hₙ(√2 x)
+calc_coeff_ψₙ(n::BigInt) = (2/π)^(1/4) / sqrt(2^n * factorial(n))
+COEFF_ψₙ = [calc_coeff_ψₙ(big(n)) for n in 0:499]
 
 function coeff_ψₙ(n::Integer)
-    (n < 500) && (return COEFF_ψₓ[n+1])
+    (n < 500) && (return COEFF_ψₙ[n+1])
     return calc_coeff_ψₙ(n)
 end
 
