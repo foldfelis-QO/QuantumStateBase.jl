@@ -19,9 +19,15 @@ module QuantumStateBase
 
     datadep_root() = datadep"QuantumStateBase"
 
+    # polynomial
     include("polynomial.jl")
+
+    # state
     include("representation.jl")
     include("basis.jl")
     include("operator.jl")
     include("state.jl")
+
+    # wigner
+    include("wigner_util.jl")
 end
