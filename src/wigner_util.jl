@@ -47,3 +47,60 @@ end
 function laguerre(m::Integer, n::Integer, x::Vector{<:Real}, p::Vector{<:Real})
     return laguerre.(m, n, x, p')
 end
+
+#########
+# utils #
+#########
+
+function save_𝐰(bin_path::String, 𝐰::Array{ComplexF64,4})
+    @info "Save W_{m,n,x,p} to $bin_path"
+    mem = open(bin_path, "w+")
+    write(mem, 𝐰)
+    close(mem)
+end
+
+function load_𝐰(
+    m_dim::Integer,
+    n_dim::Integer,
+    x_range::AbstractRange,
+    p_range::AbstractRange,
+    bin_path::String
+)
+    @info "Load W_{m,n,x,p} from $bin_path"
+    mem = open(bin_path)
+    𝐰 = Mmap.mmap(
+        mem,
+        Array{ComplexF64,4},
+        (m_dim, n_dim, length(x_range), length(p_range))
+    )
+    close(mem)
+
+    return 𝐰
+end
+
+function gen_wigner_bin_path(
+    m_dim::Integer,
+    n_dim::Integer,
+    x_range::AbstractRange,
+    p_range::AbstractRange,
+)
+    path = datadep"SqState"
+    bin_path = joinpath(
+        path,
+        "W " *
+        "m=$(m_dim) n=$(n_dim) " *
+        "x=$(range2str(x_range)) p=$(range2str(p_range)).bin"
+    )
+
+    return bin_path
+end
+
+range2str(range::AbstractRange) = replace(string(range), r":|," => "_")
+
+check_zero(m_dim, n_dim) = !iszero(m_dim) && !iszero(n_dim)
+
+check_empty(x_range, p_range) = !isempty(x_range) && !isempty(p_range)
+
+function check_argv(m_dim, n_dim, x_range, p_range)
+    return check_zero(m_dim, n_dim) && check_empty(x_range, p_range)
+end
