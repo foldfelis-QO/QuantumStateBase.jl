@@ -16,4 +16,6 @@ module QuantumStateBase
     end
 
     datadep_root() = datadep"QuantumStateBase"
+
+    include("state/state.jl")
 end
