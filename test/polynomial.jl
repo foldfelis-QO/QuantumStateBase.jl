@@ -1,5 +1,3 @@
-using ClassicalOrthogonalPolynomials
-
 @testset "laguerre" begin
     @test all(
         laguerrel(n, α, x) ≈ laguerre(n, α)(x)

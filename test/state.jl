@@ -1,14 +1,3 @@
-using LinearAlgebra
-
-Base.:(==)(s1::StateVector, s2::StateVector) = (s1.v == s2.v) && (s1.dim == s2.dim)
-Base.:(==)(s1::StateMatrix, s2::StateMatrix) = (s1.𝛒 == s2.𝛒) && (s1.dim == s2.dim)
-Base.:(≈)(s1::StateVector, s2::StateVector) = (s1.v ≈ s2.v) && (s1.dim == s2.dim)
-Base.:(≈)(s1::StateMatrix, s2::StateMatrix) = (s1.𝛒 ≈ s2.𝛒) && (s1.dim == s2.dim)
-
-include("representation.jl")
-include("basis.jl")
-include("operator.jl")
-
 @testset "pure state" begin
     dim = 70
 

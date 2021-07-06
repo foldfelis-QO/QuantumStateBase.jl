@@ -1,5 +1,7 @@
 module QuantumStateBase
     using DataDeps
+    using LinearAlgebra
+    using ClassicalOrthogonalPolynomials
 
     const DIM = 70
 
@@ -18,6 +20,8 @@ module QuantumStateBase
     datadep_root() = datadep"QuantumStateBase"
 
     include("polynomial.jl")
-    include("state/state.jl")
-
+    include("representation.jl")
+    include("basis.jl")
+    include("operator.jl")
+    include("state.jl")
 end

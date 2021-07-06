@@ -1,14 +1,8 @@
-using LinearAlgebra
-
 export
     CoherentState,
     SqueezedState,
     ThermalState,
     SqueezedThermalState
-
-include("representation.jl")
-include("basis.jl")
-include("operator.jl")
 
 ##############
 # pure state #
