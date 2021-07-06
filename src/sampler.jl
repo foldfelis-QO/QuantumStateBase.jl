@@ -1,6 +1,6 @@
 export
-    gen_gaussian_training_data,
-    gen_gaussian_training_data!,
+    gaussian_state_sampler,
+    gaussian_state_sampler!,
     gen_nongaussian_training_data,
     gen_nongaussian_training_data!
 
@@ -8,13 +8,13 @@ export
 # gaussian data generator #
 ###########################
 
-function gen_gaussian_training_data(state::StateMatrix, n::Integer; bias_phase=0.)
+function gaussian_state_sampler(state::StateMatrix, n::Integer; bias_phase=0.)
     points = Vector{Float64}(undef, n)
 
-    return gen_gaussian_training_data!(points, state, bias_phase)
+    return gaussian_state_sampler!(points, state, bias_phase)
 end
 
-function gen_gaussian_training_data!(
+function gaussian_state_sampler!(
     points::AbstractVector{Float64},
     state::StateMatrix, bias_phase::Float64
 )

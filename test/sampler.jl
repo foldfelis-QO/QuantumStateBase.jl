@@ -11,7 +11,7 @@ using KernelDensity
     @test single_point_pdf.(θs, xs') ≈ ground_truth_pdf
 
     n = 100000
-    data = gen_gaussian_training_data(state, n)
+    data = gaussian_state_sampler(state, n)
     sampled_pdf = pdf(kde((LinRange(0, 2π, n), data)), θs, xs)
 
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n < 5e-5
