@@ -8,9 +8,7 @@ module QuantumStateBase
     function __init__()
         register(DataDep(
             "QuantumStateBase",
-            """
-            Data for QuantumStateBase.
-            """,
+            """Data for QuantumStateBase.""",
             ""
         ))
 
@@ -31,4 +29,8 @@ module QuantumStateBase
     # wigner
     include("wigner_util.jl")
     include("wigner.jl")
+
+    # pdf of quadrature
+    include("quadrature_pdf.jl")
+    include("sampler.jl")
 end
