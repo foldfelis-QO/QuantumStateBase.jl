@@ -8,9 +8,7 @@ module QuantumStateBase
     function __init__()
         register(DataDep(
             "QuantumStateBase",
-            """
-            Data for QuantumStateBase.
-            """,
+            """Data for QuantumStateBase.""",
             ""
         ))
 
