@@ -12,6 +12,8 @@ Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [compat]
 ClassicalOrthogonalPolynomials = "0.4"
+KernelDensity = "0.6"
+DataDeps = "0.7"
 julia = "1.6"
 
 [extras]
