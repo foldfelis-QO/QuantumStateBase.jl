@@ -14,8 +14,8 @@ end
 
 @testset "α and ξ" begin
     @test repr(Arg(2., π/4)) == "Arg{Float64}(2.0exp($(π/4)im))"
-    @test QSB.z(α(2., π/4)) ≈ 2 * exp(im * π/4)
-    @test QSB.z(ξ(2., π/4)) ≈ 2 * exp(im * π/4)
+    @test QSB.z(α(2., π/4)) ≈ 2 * exp(-im * π/4)
+    @test QSB.z(ξ(2., π/4)) ≈ 2 * exp(-im * π/4)
 end
 
 @testset "Displacement" begin

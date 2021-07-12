@@ -69,7 +69,7 @@ end
 
 Base.show(io::IO, arg::Arg{T}) where {T} = print(io, "Arg{$T}($(arg.r)exp($(arg.θ)im))")
 
-z(arg::Arg{<:Real}) = arg.r * exp(im * arg.θ)
+z(arg::Arg{<:Real}) = arg.r * exp(-im * arg.θ)
 
 α(r::T, θ::T) where {T} = Arg{T}(r, θ)
 const ξ = α
