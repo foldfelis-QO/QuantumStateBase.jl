@@ -14,8 +14,8 @@ end
 
 @testset "α and ξ" begin
     @test repr(Arg(2., π/4)) == "Arg{Float64}(2.0exp($(π/4)im))"
-    @test QSB.z(α(2., π/4)) ≈ 2 * exp(im * π/4)
-    @test QSB.z(ξ(2., π/4)) ≈ 2 * exp(im * π/4)
+    @test QSB.z(α(2., π/4)) ≈ 2 * exp(-im * π/4)
+    @test QSB.z(ξ(2., π/4)) ≈ 2 * exp(-im * π/4)
 end
 
 @testset "Displacement" begin
@@ -55,7 +55,14 @@ end
 end
 
 @testset "measurement" begin
+    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:(QSB.DIM-1)]
+    @test QSB.coeff_ψₙ(100) == QSB.calc_coeff_ψₙ(big(100))
+    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:100]
+    @test QSB.coeff_ψₙ(500) == QSB.calc_coeff_ψₙ(big(500))
+    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:500]
 
+    ψₙs = QSB.ψₙ.(0:QSB.DIM-1, 2., 3.)
+    @test QSB.𝛑̂(2, 3) ≈ ψₙs * ψₙs'
 end
 
 @testset "Gaussian state" begin
