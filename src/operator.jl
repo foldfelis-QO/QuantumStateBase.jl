@@ -131,11 +131,14 @@ end
 # coeff_ψₙ = (2/π)^(1/4)/√(2^n n!)
 # ψₙ = coeff_ψₙ(n) exp(im n θ) exp(-x^2) Hₙ(√2 x)
 calc_coeff_ψₙ(n::BigInt) = (2/π)^(1/4) / sqrt(2^n * factorial(n))
-COEFF_ψₙ = [calc_coeff_ψₙ(big(n)) for n in 0:499]
+COEFF_ψₙ = [calc_coeff_ψₙ(big(n)) for n in 0:(DIM-1)]
 
 function coeff_ψₙ(n::Integer)
-    (n < 500) && (return COEFF_ψₙ[n+1])
-    return calc_coeff_ψₙ(n)
+    while length(COEFF_ψₙ)-1 < n
+        push!(COEFF_ψₙ, calc_coeff_ψₙ(big(length(COEFF_ψₙ))))
+    end
+
+    return COEFF_ψₙ[n+1]
 end
 
 function ψₙ(n::Integer, θ::Real, x::Real)
