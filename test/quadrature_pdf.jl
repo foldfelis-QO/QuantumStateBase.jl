@@ -10,7 +10,7 @@
 
     @test all(
         q_pdf(
-            VacuumState(rep=StateMatrix),
+            VacuumState(rep=StateMatrix, dim=100),
             LinRange(0, 2π, 2),
             LinRange(-10, 10, 100),
         )[i, :] ≈ v.(LinRange(-10, 10, 100))
