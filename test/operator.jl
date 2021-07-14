@@ -59,8 +59,8 @@ end
     @test QSB.coeff_ψₙ(1001) == QSB.calc_coeff_ψₙ(big(1001))
 
     # try to extand coeff of ψₙ
-    # QSB.COEFF_ψₙ = [QSB.calc_coeff_ψₙ(big(n)) for n in 0:80]
-    # @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:80]
+    QSB.extend_coeff_ψₙ!(80)
+    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:80]
 
     ψₙs = QSB.ψₙ.(0:QSB.DIM-1, 2., 3.)
     @test QSB.𝛑̂(2, 3) ≈ ψₙs * ψₙs'

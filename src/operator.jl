@@ -133,6 +133,12 @@ end
 calc_coeff_ψₙ(n::BigInt) = (2/π)^(1/4) / sqrt(2^n * factorial(n))
 COEFF_ψₙ = [calc_coeff_ψₙ(big(n)) for n in 0:(DIM-1)]
 
+function extend_coeff_ψₙ!(n::Integer)
+    while length(COEFF_ψₙ)-1 < n
+        push!(COEFF_ψₙ, calc_coeff_ψₙ(big(length(COEFF_ψₙ))))
+    end
+end
+
 function coeff_ψₙ(n::Integer)
     (n < length(COEFF_ψₙ)) && (return COEFF_ψₙ[n+1])
 
