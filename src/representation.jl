@@ -14,6 +14,12 @@ abstract type AbstractState end
 # state vector #
 ################
 
+"""
+    StateVector{T <: Number} <: AbstractState
+
+Vector representation for pure quantum state.
+There are various constructures to construct different pure quantum states.
+"""
 mutable struct StateVector{T <: Number} <: AbstractState
     v::Vector{T}
     dim::Int64
@@ -32,8 +38,42 @@ end
 #     print(io, "$(Crayon(reset=true)) )")
 # end
 
+"""
+    Base.vec(state::StateVector{<:Number})
+
+To get the vector of a pure quantum state.
+
+# Examples
+```jldoctest
+julia> state = FockState(1);
+
+julia> vec(state)
+70-element Vector{ComplexF64}:
+ 0.0 + 0.0im
+ 1.0 + 0.0im
+     ⋮
+ 0.0 + 0.0im
+```
+"""
 Base.vec(state::StateVector{<:Number}) = state.v
 
+"""
+    𝛒(state::StateVector{<:Number})
+
+To get the density matrix of a pure quantum state.
+
+# Examples
+```jldoctest
+julia> state = FockState(1);
+
+julia> 𝛒(state)
+70×70 Matrix{ComplexF64}:
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im  …  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  1.0+0.0im  0.0+0.0im     0.0+0.0im  0.0+0.0im  0.0+0.0im
+    ⋮                             ⋱
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im     0.0+0.0im  0.0+0.0im  0.0+0.0im
+```
+"""
 𝛒(state::StateVector{<:Number}) = state.v * state.v'
 
 function purity(state::StateVector{<:Number})
@@ -51,6 +91,12 @@ end
 # state matrix #
 ################
 
+"""
+    StateMatrix{T <: Number} <: AbstractState
+
+Density Matrix representation for pure and mixed quantum state.
+There are various constructures to construct different pure and mixed quantum states.
+"""
 mutable struct StateMatrix{T <: Number} <: AbstractState
     𝛒::Matrix{T}
     dim::Int64
@@ -79,6 +125,23 @@ function StateMatrix(state::StateVector{T}) where {T <: Number}
     return StateMatrix{T}(𝛒, state.dim)
 end
 
+"""
+    𝛒(state::StateMatrix{<:Number})
+
+To get the density matrix of a pure quantum state.
+
+# Examples
+```jldoctest
+julia> state = FockState(1);
+
+julia> 𝛒(state)
+70×70 Matrix{ComplexF64}:
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im  …  0.0+0.0im  0.0+0.0im  0.0+0.0im
+ 0.0+0.0im  1.0+0.0im  0.0+0.0im     0.0+0.0im  0.0+0.0im  0.0+0.0im
+    ⋮                             ⋱
+ 0.0+0.0im  0.0+0.0im  0.0+0.0im     0.0+0.0im  0.0+0.0im  0.0+0.0im
+```
+"""
 𝛒(state::StateMatrix{<:Number}) = state.𝛒
 
 function purity(state::StateMatrix{<:Number})
