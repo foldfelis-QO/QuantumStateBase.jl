@@ -165,7 +165,7 @@ function Base.rand(state::StateVector, n::Integer, ::Type{IsGaussian}; kwargs...
 end
 
 function Base.rand(state::StateVector, ::Type{IsGaussian}; kwargs...)
-    return rand(StateMatrix(state), 1, IsGaussian; kwargs...)
+    return rand(state, 1, IsGaussian; kwargs...)
 end
 
 """
@@ -199,5 +199,5 @@ function Base.rand(state::StateVector, n::Integer; kwargs...)
 end
 
 function Base.rand(state::StateVector; kwargs...)
-    return rand(StateMatrix(state), 1; kwargs...)
+    return rand(state, 1; kwargs...)
 end
