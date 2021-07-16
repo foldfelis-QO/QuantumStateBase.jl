@@ -20,7 +20,7 @@ end
 @testset "pdf and non-Gaussian state data generator" begin
     state = displace!(
         squeeze!(
-            SinglePhotonState(rep=StateMatrix, dim=100),
+            SinglePhotonState(dim=100),
             ξ(0.5, π/2)
         ),
         α(3., π/2)

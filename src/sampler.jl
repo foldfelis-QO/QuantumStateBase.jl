@@ -12,7 +12,7 @@ export
 ###########################
 
 """
-    gaussian_state_sampler(state::StateMatrix, n::Integer; bias_phase=0.)
+    gaussian_state_sampler(state::AbstractState, n::Integer; bias_phase=0.)
 
 Random points sampled from quadrature probability density function of Gaussian `state`.
 
@@ -20,7 +20,7 @@ Random points sampled from quadrature probability density function of Gaussian `
 * `n`: N points.
 * `bias_phase`: The offset of the θ coordinate
 """
-function gaussian_state_sampler(state::StateMatrix, n::Integer; bias_phase=0.)
+function gaussian_state_sampler(state::AbstractState, n::Integer; bias_phase=0.)
     points = Matrix{Float64}(undef, 2, n)
 
     return gaussian_state_sampler!(points, state, bias_phase)
@@ -43,6 +43,13 @@ function gaussian_state_sampler!(
     points[2, :] .= real(μ) + σ .* randn(n)
 
     return points
+end
+
+function gaussian_state_sampler!(
+    points::Matrix{T},
+    state::StateVector, bias_phase::T
+) where {T}
+    return gaussian_state_sampler!(points, StateMatrix(state), bias_phase)
 end
 
 ##############################
@@ -70,7 +77,7 @@ end
 
 """
     state_sampler(
-        state::StateMatrix, n::Integer;
+        state::AbstractState, n::Integer;
         warm_up_n=128, batch_size=64, c=0.9, θ_range=(0., 2π), x_range=(-10., 10.),
         show_log=false
     )
@@ -85,7 +92,7 @@ Random points sampled from quadrature probability density function of Gaussian `
 * `x_range`: Sampling range of x.
 """
 function state_sampler(
-    state, n;
+    state::AbstractState, n::Integer;
     warm_up_n=128, batch_size=64, c=0.9, θ_range=(0., 2π), x_range=(-10., 10.),
     show_log=false
 )
@@ -151,6 +158,14 @@ function state_sampler!(
     sampled_points .= sampled_points[:, sortperm(sampled_points[1, :])]
 
     return sampled_points
+end
+
+function state_sampler!(
+    sampled_points::Matrix{T}, 𝛑̂_res_vec::Vector{Matrix{Complex{T}}},
+    state::StateVector,
+    args...
+) where {T}
+    return state_sampler!(sampled_points, 𝛑̂_res_vec, StateMatrix(state), args...)
 end
 
 ############
