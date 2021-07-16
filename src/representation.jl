@@ -76,6 +76,19 @@ julia> 𝛒(state)
 """
 𝛒(state::StateVector{<:Number}) = state.v * state.v'
 
+"""
+    purity(state::StateVector{<:Number})
+
+Calculate purity for quantum state in vector representation.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> purity(state)
+1.0
+```
+"""
 function purity(state::StateVector{<:Number})
     𝛒 = state.v * state.v'
     𝛒 /= tr(𝛒)
@@ -83,6 +96,18 @@ function purity(state::StateVector{<:Number})
     return real(tr(𝛒^2))
 end
 
+"""
+    Base.copy(state::StateVector{<:Number})
+
+Return a new instance of a `StateVector`
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> new_state = copy(state);
+```
+"""
 function Base.copy(state::StateVector{T}) where {T<:Number}
     return StateVector{T}(copy(state.v), state.dim)
 end
@@ -144,6 +169,19 @@ julia> 𝛒(state)
 """
 𝛒(state::StateMatrix{<:Number}) = state.𝛒
 
+"""
+    purity(state::StateMatrix{<:Number})
+
+Calculate purity for quantum state in density matrix representation.
+
+# Examples
+```jldoctest
+julia> state = VacuumState(rep=StateMatrix);
+
+julia> purity(state)
+1.0
+```
+"""
 function purity(state::StateMatrix{<:Number})
     𝛒 = state.𝛒
     𝛒 /= tr(𝛒)
@@ -151,6 +189,18 @@ function purity(state::StateMatrix{<:Number})
     return real(tr(𝛒^2))
 end
 
+"""
+    Base.copy(state::StateMatrix{<:Number})
+
+Return a new instance of a `StateMatrix`
+
+# Examples
+```jldoctest
+julia> state = VacuumState(rep=StateMatrix);
+
+julia> new_state = copy(state);
+```
+"""
 function Base.copy(state::StateMatrix{T}) where {T<:Number}
     return StateMatrix{T}(copy(state.𝛒), state.dim)
 end
