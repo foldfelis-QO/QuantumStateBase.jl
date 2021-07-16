@@ -186,10 +186,32 @@ const ξ = α
 # displacement #
 ################
 
+"""
+    Displacement(α::Arg{<:Real}; dim=DIM)
+
+Displacement operator in matrix representation
+
+``\\hat{D}(\\alpha) = exp(\\alpha \\hat{a}^{\\dagger} - \\alpha^{*} \\hat{a})``
+"""
 function Displacement(α::Arg{<:Real}; dim=DIM)
     return exp(z(α) * Creation(dim=dim) - z(α)' * Annihilation(dim=dim))
 end
 
+"""
+    displace!(state::AbstractState)
+
+Apply displacement operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> displace!(state, α(5., π/4));
+
+julia> vec(state) == vec(CoherentState(α(5., π/4)))
+true
+```
+"""
 function displace!(state::StateVector{<:Number}, α::Arg{<:Real})
     dim = state.dim
     state.v = Displacement(α, dim=dim) * state.v
@@ -209,10 +231,32 @@ end
 # squeezing #
 #############
 
+"""
+    Squeezing(ξ::Arg{<:Real}; dim=DIM)
+
+Squeezing operator in matrix representation
+
+``\\hat{S}(\\xi) = exp(\\frac{1}{2} (\\xi^{*} \\hat{a}^{2} - \\xi \\hat{a}^{\\dagger 2}))``
+"""
 function Squeezing(ξ::Arg{<:Real}; dim=DIM)
     return exp(0.5 * z(ξ)' * Annihilation(dim=dim)^2 - 0.5 * z(ξ) * Creation(dim=dim)^2)
 end
 
+"""
+    squeeze!(state::AbstractState)
+
+Apply squeezing operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> squeeze!(state, α(0.5, π/4));
+
+julia> vec(state) == vec(SqueezedState(ξ(0.5, π/4)))
+true
+```
+"""
 function squeeze!(state::StateVector{<:Number}, ξ::Arg{<:Real})
     dim = state.dim
     state.v = Squeezing(ξ, dim=dim) * state.v
