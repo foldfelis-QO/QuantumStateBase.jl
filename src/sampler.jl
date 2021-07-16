@@ -133,10 +133,29 @@ end
 
 struct IsGaussian end
 
+"""
+    Base.rand(state::AbstractState, n::Integer, ::Type{IsGaussian}; kwargs...)
+
+Random points sampled from quadrature probability density function of Gaussian `state`.
+
+* `state`: Quantum state.
+* `n`: n points.
+* `IsGaussian`: To declare `state` is a Gaussian state.
+* `kwargs...`: see `gaussian_state_sampler`
+"""
 function Base.rand(state::StateMatrix, n::Integer, ::Type{IsGaussian}; kwargs...)
     return gaussian_state_sampler(state, n; kwargs...)
 end
 
+"""
+    Base.rand(state::AbstractState, ::Type{IsGaussian}; kwargs...)
+
+One random point sampled from quadrature probability density function of Gaussian `state`.
+
+* `state`: Quantum state.
+* `IsGaussian`: To declare `state` is a Gaussian state.
+* `kwargs...`: see `gaussian_state_sampler`
+"""
 function Base.rand(state::StateMatrix, ::Type{IsGaussian}; kwargs...)
     return rand(state, 1, IsGaussian; kwargs...)
 end
@@ -149,12 +168,28 @@ function Base.rand(state::StateVector, ::Type{IsGaussian}; kwargs...)
     return rand(StateMatrix(state), 1, IsGaussian; kwargs...)
 end
 
-# ===
+"""
+    Base.rand(state::AbstractState, n::Integer; kwargs...)
 
+Random points sampled from quadrature probability density function of `state`.
+
+* `state`: Quantum state.
+* `n`: n points.
+* `kwargs...`: see `nongaussian_state_sampler`
+"""
 function Base.rand(state::StateMatrix, n::Integer; kwargs...)
     return nongaussian_state_sampler(state, n; kwargs...)
 end
 
+"""
+    Base.rand(state::AbstractState, n::Integer; kwargs...)
+
+One random point sampled from quadrature probability density function of `state`.
+
+* `state`: Quantum state.
+* `n`: n points.
+* `kwargs...`: see `nongaussian_state_sampler`
+"""
 function Base.rand(state::StateMatrix; kwargs...)
     return rand(state, 1; kwargs...)
 end
