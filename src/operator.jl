@@ -20,8 +20,28 @@ export
 # a† and a #
 ############
 
+"""
+    Creation(; dim=DIM)
+
+Creation operator in matrix representation
+"""
 Creation(; dim=DIM) = diagm(-1 => sqrt.(1:dim-1))
 
+"""
+    create!(state::AbstractState)
+
+Apply creation operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> create!(state);
+
+julia> vec(state) == vec(SinglePhotonState())
+true
+```
+"""
 function create!(state::StateVector{<:Number})
     dim = state.dim
     state.v = Creation(dim=dim) * state.v
@@ -37,10 +57,48 @@ function create!(state::StateMatrix{<:Number})
     return state
 end
 
+"""
+    create(state::AbstractState)
+
+Apply creation operator on the new instance of the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> new_state = create(state);
+
+julia> vec(state) == vec(VacuumState())
+true
+
+julia> vec(new_state) == vec(SinglePhotonState())
+true
+```
+"""
 create(state::AbstractState) = create!(copy(state))
 
+"""
+    Annihilation(; dim=DIM)
+
+Annihilation operator in matrix representation
+"""
 Annihilation(; dim=DIM) = diagm(1 => sqrt.(1:dim-1))
 
+"""
+    annihilate!(state::AbstractState)
+
+Apply annihilation operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = SinglePhotonState();
+
+julia> annihilate!(state);
+
+julia> vec(state) == vec(VacuumState())
+true
+```
+"""
 function annihilate!(state::StateVector{<:Number})
     dim = state.dim
     state.v = Annihilation(dim=dim) * state.v
@@ -56,6 +114,24 @@ function annihilate!(state::StateMatrix{<:Number})
     return state
 end
 
+"""
+    annihilate!(state::AbstractState)
+
+Apply annihilation operator on the new instance of the quantum state.
+
+# Examples
+```jldoctest
+julia> state = SinglePhotonState();
+
+julia> new_state = annihilate(state);
+
+julia> vec(state) == vec(SinglePhotonState())
+true
+
+julia> vec(new_state) == vec(VacuumState())
+true
+```
+"""
 annihilate(state::AbstractState) = annihilate!(copy(state))
 
 ###########
