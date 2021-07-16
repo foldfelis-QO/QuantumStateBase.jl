@@ -25,6 +25,12 @@ mutable struct StateVector{T <: Number} <: AbstractState
     dim::Int64
 end
 
+function Base.show(io::IO, state::StateVector{T}) where {T}
+    println(io, "StateVector{$T}(dim=$(state.dim), vec=[")
+    Base.print_matrix(IOContext(io, :limit=>true), state.v)
+    print(io, "\n])")
+end
+
 # function Base.show(io::IO, state::StateVector{T}) where {T}
 #     print(io, "StateVector{$T}( ")
 #     v = abs2.(state.v)
@@ -125,6 +131,12 @@ There are various constructures to construct different pure and mixed quantum st
 mutable struct StateMatrix{T <: Number} <: AbstractState
     𝛒::Matrix{T}
     dim::Int64
+end
+
+function Base.show(io::IO, state::StateMatrix{T}) where {T}
+    println(io, "StateMatrix{$T}(dim=$(state.dim), 𝛒=[")
+    Base.print_matrix(IOContext(io, :limit=>true), state.𝛒)
+    print(io, "\n])")
 end
 
 # function Base.show(io::IO, state::StateMatrix{T}) where {T}
