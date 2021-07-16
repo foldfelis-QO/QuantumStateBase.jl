@@ -1,7 +1,7 @@
 @testset "wigner" begin
     m, n = 40, 3
     x = p = collect(-2:0.1:2)
-    @test wigner(m, n, x, p) ==
+    @test QSB.wigner(m, n, x, p) ==
         QSB.gaussian_function(x, p) .*
         QSB.coefficient_of_wave_function(m, n) .*
         QSB.z_to_power(m, n, x, p) .*
