@@ -145,8 +145,21 @@ end
 #     print(io, "$(Crayon(reset=true)))")
 # end
 
+"""
+    StateMatrix(state::StateVector{<:Number})
+
+Convert a `StateVector` to a `StateMatrix`.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> StateMatrix(state);
+```
+"""
 function StateMatrix(state::StateVector{T}) where {T <: Number}
     𝛒 = state.v * state.v'
+
     return StateMatrix{T}(𝛒, state.dim)
 end
 
