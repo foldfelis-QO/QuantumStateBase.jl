@@ -1,7 +1,7 @@
 # Quantum State Base
 
 Quantum states for quantum optics
-  
+
 | **Documentation** | **Build Status** | **Release** | **Website** |
 |:-----------------:|:----------------:|:-----------:|:-----------:|
 | [![doc stable badge]][doc stable link] <br> [![doc dev badge]][doc dev link] | [![ci badge]][ci link] [![codecov badge]][codecov link] <br> [![blue badge]][blue link] | [![latest release]][release link] [![latest release date]][release link] <br> [![license badge]][license link]| [![website badge]][website link] |
@@ -28,5 +28,14 @@ Quantum states for quantum optics
 [website link]: https://foldfelis-qo.github.io/QuantumStateBase.jl
 
 <p align="center">
-  <img src="icon.png" alt="QuantumStateBase" width="400"/>
+  <img src="logo.png" alt="QuantumStateBase" width="400"/>
 </p>
+
+## Installation
+
+The package can be installed with the Julia package manager.
+From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+
+```julia-repl
+pkg> add QuantumStateBase
+```

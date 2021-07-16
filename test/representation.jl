@@ -6,14 +6,13 @@
     vacuum_state_v[0 + 1] = 1
 
     state = StateVector{T}(vacuum_state_v, dim)
-    # @test repr(state) == "StateVector{ComplexF64}( " *
-    #     "\e[38;2;255;102;102m\u2587" *
-    #     "\e[38;2;178;178;178m\u2587"^(dim-1) *
-    #     "\e[0m )"
     @test vec(state) == vacuum_state_v
     @test state.dim == dim
     @test 𝛒(state) == vacuum_state_v * vacuum_state_v'
     @test purity(state) ≈ 1
+
+    @test repr(VacuumState(dim=5)) == "StateVector{ComplexF64}(dim=5, vec=[\n" *
+        " 1.0 + 0.0im\n 0.0 + 0.0im\n 0.0 + 0.0im\n 0.0 + 0.0im\n 0.0 + 0.0im\n])"
 
     # new_state = create!(copy(state))
     # @test new_state == SinglePhotonState(dim=dim)
@@ -28,13 +27,16 @@ end
     vacuum_state_𝛒[0+1, 0+1] = 1
 
     state = StateMatrix{T}(vacuum_state_𝛒, dim)
-    # @test repr(state) == "StateMatrix{ComplexF64}(\n" *
-    #     "\e[38;2;255;102;102m\u2587" * "\e[38;2;178;178;178m\u2587"^(dim-1) * "\n" *
-    #     ("\e[38;2;178;178;178m\u2587"^dim * "\n")^(dim-1) *
-    #     "\e[0m)"
     @test state.dim == dim
     @test 𝛒(state) == vacuum_state_𝛒
     @test purity(state) ≈ 1
+
+    @test repr(VacuumState(dim=5, rep=StateMatrix)) == "StateMatrix{ComplexF64}(dim=5, 𝛒=[\n" *
+        " 1.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im\n" *
+        " 0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im\n" *
+        " 0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im\n" *
+        " 0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im\n" *
+        " 0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im  0.0 + 0.0im\n])"
 
     # new_state = create!(copy(state))
     # @test new_state == SinglePhotonState(rep=StateMatrix, dim=dim)
