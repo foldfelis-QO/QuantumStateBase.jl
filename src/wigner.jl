@@ -1,5 +1,4 @@
 export
-    wigner,
     WignerFunction,
     WignerSurface
 
@@ -86,6 +85,24 @@ mutable struct WignerFunction{T<:Integer, U<:AbstractRange}
     end
 end
 
+"""
+    WignerFunction(x_range::AbstractRange, p_range::AbstractRange; dim=DIM)
+
+Declare a generalized Wigner function with `x` range and `p` range
+
+* `x_range`: range of position.
+* `p_range`: range of momentum.
+* `dim`: Maximum photon number for truncate, default is $DIM.
+
+# Examples
+```julia-repl
+julia> state = VacuumState();
+
+julia> wf = WignerFunction(-10:0.1:10, -10:0.1:10);
+
+julia> w = wf(state);
+```
+"""
 function WignerFunction(x_range::AbstractRange, p_range::AbstractRange; dim=DIM)
     return WignerFunction(dim, dim, x_range, p_range)
 end
