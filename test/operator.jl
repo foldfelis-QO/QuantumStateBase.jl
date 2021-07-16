@@ -13,7 +13,7 @@
 end
 
 @testset "α and ξ" begin
-    @test repr(ComplexVec(2., π/4)) == "ComplexVec{Float64}(2.0exp($(π/4)im))"
+    @test repr(ComplexVec(2., π/4)) == "ComplexVec{Float64}(2.0exp(-$(π/4)im))"
     @test QSB.z(α(2., π/4)) ≈ 2 * exp(-im * π/4)
     @test QSB.z(ξ(2., π/4)) ≈ 2 * exp(-im * π/4)
 end

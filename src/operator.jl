@@ -168,7 +168,7 @@ Eigenvalue of annihilation operator.
 # Examples
 ```jldoctest
 julia> α(1.5, π/4)
-ComplexVec{Float64}(1.5exp(0.7853981633974483im))
+ComplexVec{Float64}(1.5exp(-0.7853981633974483im))
 ```
 """
 α(r::T, θ::T) where {T} = ComplexVec{T}(r, θ)
@@ -179,7 +179,7 @@ ComplexVec{Float64}(1.5exp(0.7853981633974483im))
 # Examples
 ```jldoctest
 julia> ξ(1.5, π/4)
-ComplexVec{Float64}(1.5exp(0.7853981633974483im))
+ComplexVec{Float64}(1.5exp(-0.7853981633974483im))
 ```
 """
 const ξ = α

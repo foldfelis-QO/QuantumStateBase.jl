@@ -8,10 +8,35 @@ export
 # pure state #
 ##############
 
+"""
+    CoherentState(α::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
+
+Coherent state is defined as the eigenstate of annihilation operator.
+
+* `α`: Eigenvalue of annihilation operator
+* `dim`: Maximum photon number for truncate, default is $DIM
+* `rep`: In which representation, default is `StateVector`.
+
+``\\hat{a} | \\alpha \\rangle = \\alpha | \\alpha \\rangle``
+
+This constructor will construct ``| \\alpha \\rangle = \\hat{D}(\\alpha) | 0 \\rangle``
+"""
 function CoherentState(α::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
     return displace!(VacuumState(dim=dim, rep=rep), α)
 end
 
+"""
+    SqueezedState(ξ::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
+
+Squeezed state is defined if its electric field strength for some phases
+has a quantum uncertainty smaller than that of a coherent state.
+
+* `ξ`: Squeezing factor
+* `dim`: Maximum photon number for truncate, default is $DIM
+* `rep`: In which representation, default is `StateVector`.
+
+This constructor will construct ``| \\xi \\rangle = \\hat{S}(\\xi) | 0 \\rangle``
+"""
 function SqueezedState(ξ::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
     return squeeze!(VacuumState(dim=dim, rep=rep), ξ)
 end
