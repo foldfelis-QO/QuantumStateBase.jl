@@ -6,7 +6,7 @@ export
     annihilate!,
     annihilate,
 
-    Arg,
+    ComplexVec,
     α,
     ξ,
 
@@ -143,18 +143,18 @@ annihilate(state::AbstractState) = annihilate!(copy(state))
 ###########
 
 """
-    Arg{T <: Real}(r::T, θ::T)
+    ComplexVec{T <: Real}(r::T, θ::T)
 
-Argument for complex plane.
+Vector in polar coordinate for complex plane.
 """
-struct Arg{T <: Real}
+struct ComplexVec{T <: Real}
     r::T
     θ::T
 end
 
-Base.show(io::IO, arg::Arg{T}) where {T} = print(io, "Arg{$T}($(arg.r)exp($(arg.θ)im))")
+Base.show(io::IO, complexvec::ComplexVec{T}) where {T} = print(io, "ComplexVec{$T}($(complexvec.r)exp($(complexvec.θ)im))")
 
-z(arg::Arg{<:Real}) = arg.r * exp(-im * arg.θ)
+z(complexvec::ComplexVec{<:Real}) = complexvec.r * exp(-im * complexvec.θ)
 
 """
     α(r::Real, θ::Real)
@@ -166,10 +166,10 @@ Eigenvalue of annihilation operator.
 # Examples
 ```jldoctest
 julia> α(1.5, π/4)
-Arg{Float64}(1.5exp(0.7853981633974483im))
+ComplexVec{Float64}(1.5exp(0.7853981633974483im))
 ```
 """
-α(r::T, θ::T) where {T} = Arg{T}(r, θ)
+α(r::T, θ::T) where {T} = ComplexVec{T}(r, θ)
 
 """
     ξ(r::Real, θ::Real)
@@ -177,7 +177,7 @@ Arg{Float64}(1.5exp(0.7853981633974483im))
 # Examples
 ```jldoctest
 julia> ξ(1.5, π/4)
-Arg{Float64}(1.5exp(0.7853981633974483im))
+ComplexVec{Float64}(1.5exp(0.7853981633974483im))
 ```
 """
 const ξ = α
@@ -187,13 +187,13 @@ const ξ = α
 ################
 
 """
-    Displacement(α::Arg{<:Real}; dim=DIM)
+    Displacement(α::ComplexVec{<:Real}; dim=DIM)
 
 Displacement operator in matrix representation
 
 ``\\hat{D}(\\alpha) = exp(\\alpha \\hat{a}^{\\dagger} - \\alpha^{*} \\hat{a})``
 """
-function Displacement(α::Arg{<:Real}; dim=DIM)
+function Displacement(α::ComplexVec{<:Real}; dim=DIM)
     return exp(z(α) * Creation(dim=dim) - z(α)' * Annihilation(dim=dim))
 end
 
@@ -212,14 +212,14 @@ julia> vec(state) == vec(CoherentState(α(5., π/4)))
 true
 ```
 """
-function displace!(state::StateVector{<:Number}, α::Arg{<:Real})
+function displace!(state::StateVector{<:Number}, α::ComplexVec{<:Real})
     dim = state.dim
     state.v = Displacement(α, dim=dim) * state.v
 
     return state
 end
 
-function displace!(state::StateMatrix{<:Number}, α::Arg{<:Real})
+function displace!(state::StateMatrix{<:Number}, α::ComplexVec{<:Real})
     dim = state.dim
     𝐝 = Displacement(α, dim=dim)
     state.𝛒 = 𝐝 * state.𝛒 * 𝐝'
@@ -232,13 +232,13 @@ end
 #############
 
 """
-    Squeezing(ξ::Arg{<:Real}; dim=DIM)
+    Squeezing(ξ::ComplexVec{<:Real}; dim=DIM)
 
 Squeezing operator in matrix representation
 
 ``\\hat{S}(\\xi) = exp(\\frac{1}{2} (\\xi^{*} \\hat{a}^{2} - \\xi \\hat{a}^{\\dagger 2}))``
 """
-function Squeezing(ξ::Arg{<:Real}; dim=DIM)
+function Squeezing(ξ::ComplexVec{<:Real}; dim=DIM)
     return exp(0.5 * z(ξ)' * Annihilation(dim=dim)^2 - 0.5 * z(ξ) * Creation(dim=dim)^2)
 end
 
@@ -257,14 +257,14 @@ julia> vec(state) == vec(SqueezedState(ξ(0.5, π/4)))
 true
 ```
 """
-function squeeze!(state::StateVector{<:Number}, ξ::Arg{<:Real})
+function squeeze!(state::StateVector{<:Number}, ξ::ComplexVec{<:Real})
     dim = state.dim
     state.v = Squeezing(ξ, dim=dim) * state.v
 
     return state
 end
 
-function squeeze!(state::StateMatrix{<:Number}, ξ::Arg{<:Real})
+function squeeze!(state::StateMatrix{<:Number}, ξ::ComplexVec{<:Real})
     dim = state.dim
     𝐬 = Squeezing(ξ, dim=dim)
     state.𝛒 = 𝐬 * state.𝛒 * 𝐬'
