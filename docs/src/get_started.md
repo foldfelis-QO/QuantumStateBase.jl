@@ -9,7 +9,7 @@
 Fock state or number state is the common basis to construct quantum space.
 To construct a Fock state, a simple way is to use the constructor:
 
-```julia-repl
+```julia
 julia> FockState(1)
 StateVector{ComplexF64}(dim=70, vec=[
  0.0 + 0.0im
@@ -19,7 +19,7 @@ StateVector{ComplexF64}(dim=70, vec=[
  0.0 + 0.0im
 ])
 ```
-```julia-repl
+```julia
 julia> NumberState(1)
 StateVector{ComplexF64}(dim=70, vec=[
  0.0 + 0.0im
@@ -34,7 +34,13 @@ StateVector{ComplexF64}(dim=70, vec=[
 
 In quantum mechanics, coherent state is defined as an eigenstate of annihilation operator.
 
-```julia-repl
+The simple way to construct a coherent state is to use the pre-defined constructure that provides:
+
+```math
+| \alpha \rangle = \hat{D}(\alpha) | 0 \rangle
+```
+
+```julia
 julia> CoherentState(α(4.5, π/4))
 StateVector{ComplexF64}(dim=70, vec=[
   4.006529739317876e-5 + 9.659393542585425e-17im
@@ -45,9 +51,38 @@ StateVector{ComplexF64}(dim=70, vec=[
 ])
 ```
 
+It is also recommend to use the `displace!` operator to construct coherent state.
+
+For example:
+
+```math
+| \psi \rangle = \hat{D}(\alpha) | 1 \rangle
+```
+
+```julia
+julia> displace!(FockState(1), α(4.5, π/4))
+StateVector{ComplexF64}(dim=70, vec=[
+ -0.00012748699564590476 - 0.00012748699564585426im
+  -0.0007712569748142598 + 4.4892457438879324e-17im
+                         ⋮
+   -4.558281860401069e-8 - 4.558281860401146e-8im
+   -5.084710321874281e-8 - 4.331617601499496e-22im
+])
+
+```
+
 ### Squeezed state
 
-```julia-repl
+Squeezed state is defined if its electric field strength for some phases
+has a quantum uncertainty smaller than that of a coherent state.
+
+The simple way to construct a squeezed state is to use the pre-defined constructure that provides:
+
+```math
+| \xi \rangle = \hat{S}(\xi) | 0 \rangle
+```
+
+```julia
 julia> SqueezedState(ξ(0.5, π/4))
 StateVector{ComplexF64}(dim=70, vec=[
      0.9417106158316756 + 3.209844670319301e-18im
@@ -58,9 +93,32 @@ StateVector{ComplexF64}(dim=70, vec=[
 ])
 ```
 
+It is also recommend to use the `squeeze!` operator to construct coherent state.
+
+For example:
+
+```math
+| \psi \rangle = \hat{S}(\xi) | 1 \rangle
+```
+
+```julia
+julia> squeeze!(SinglePhotonState(), ξ(0.3, π/8))
+StateVector{ComplexF64}(dim=70, vec=[
+                    0.0 + 0.0im
+     0.9356524786986595 + 8.16994637882625e-19im
+                        ⋮
+                    0.0 + 0.0im
+ 1.1365395531228005e-18 - 1.136539553122705e-18im
+])
+
+```
+
+
 ### Thermal state
 
-```julia-repl
+Thermal state is a mixed state with photon number distribution described by Bose-Einstein distribution.
+
+```julia
 julia> ThermalState(0.5)
 StateMatrix{ComplexF64}(dim=70, 𝛒=[
  0.6666666666666666 + 0.0im                 0.0 + 0.0im  …                    0.0 + 0.0im
@@ -84,7 +142,13 @@ StateMatrix{ComplexF64}(dim=70, 𝛒=[
 
 ### Squeezed thermal state
 
-```julia-repl
+Squeezed thermal state with `ξ = 0.3 exp(-im * π/4)` and `n̄ = 0.5` is equivalent to
+
+```julia
+squeeze!(ThermalState(0.5), ξ(0.3, π/4))
+```
+
+```julia
 julia> SqueezedThermalState(ξ(0.3, π/4), 0.5)
 StateMatrix{ComplexF64}(dim=70, 𝛒=[
       0.6407801270016841 + 8.058693321522632e-20im  …                      0.0 + 0.0im
