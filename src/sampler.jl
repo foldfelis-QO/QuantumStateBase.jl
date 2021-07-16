@@ -4,33 +4,34 @@ export
     gaussian_state_sampler,
     gaussian_state_sampler!,
     nongaussian_state_sampler,
-    nongaussian_state_sampler!
+    nongaussian_state_sampler!,
+    IsGaussian
 
 ###########################
 # gaussian data generator #
 ###########################
 
 function gaussian_state_sampler(state::StateMatrix, n::Integer; bias_phase=0.)
-    points = Vector{Float64}(undef, n)
+    points = Matrix{Float64}(undef, 2, n)
 
     return gaussian_state_sampler!(points, state, bias_phase)
 end
 
 function gaussian_state_sampler!(
-    points::AbstractVector{Float64},
-    state::StateMatrix, bias_phase::Float64
-)
-    n = length(points)
+    points::Matrix{T},
+    state::StateMatrix, bias_phase::T
+) where {T}
+    n = size(points, 2)
 
     # θs
-    view(points, :) .= sort!(2π*rand(n) .+ bias_phase)
+    points[1, :] .= sort!(2π*rand(n) .+ bias_phase)
 
     # μ and σ given θ
-    μ = π̂ₓ_μ(view(points, :), state)
-    σ = real(sqrt.(π̂ₓ²_μ(view(points, :), state) - μ.^2))
+    μ = π̂ₓ_μ(points[1, :], state)
+    σ = real(sqrt.(π̂ₓ²_μ(points[1, :], state) - μ.^2))
 
     # xs
-    view(points, :) .= real(μ) + σ .* randn(n)
+    points[2, :] .= real(μ) + σ .* randn(n)
 
     return points
 end
@@ -58,9 +59,9 @@ function reject!(new_points, gen_point, p, g, c)
 end
 
 function nongaussian_state_sampler(
-    state;
-    n=4096, warm_up_n=128, batch_size=64, c=0.9, θ_range=(0., 2π), x_range=(-10., 10.),
-    show_log=true
+    state, n;
+    warm_up_n=128, batch_size=64, c=0.9, θ_range=(0., 2π), x_range=(-10., 10.),
+    show_log=false
 )
     sampled_points = Matrix{Float64}(undef, 2, n)
     𝛑̂_res_vec = [Matrix{complex(Float64)}(undef, state.dim, state.dim) for _ in 1:Threads.nthreads()]
@@ -83,6 +84,7 @@ function nongaussian_state_sampler!(
     p = (thread_id, θ, x) -> q_pdf!(𝛑̂_res_vec[thread_id], state, θ, x)
 
     show_log && @info "Warm up"
+    warm_up_n = n < warm_up_n ? n : warm_up_n
     warm_up_points = view(sampled_points, :, 1:warm_up_n)
     gen_rand_point = () -> [ranged_rand(θ_range), ranged_rand(x_range)]
     kde_result = kde((ranged_rand(n, θ_range), ranged_rand(n, x_range)))
@@ -123,4 +125,44 @@ function nongaussian_state_sampler!(
     sampled_points .= sampled_points[:, sortperm(sampled_points[1, :])]
 
     return sampled_points
+end
+
+############
+# wrapping #
+############
+
+struct IsGaussian end
+
+function Base.rand(state::StateMatrix, n::Integer, ::Type{IsGaussian}; kwargs...)
+    return gaussian_state_sampler(state, n; kwargs...)
+end
+
+function Base.rand(state::StateMatrix, ::Type{IsGaussian}; kwargs...)
+    return rand(state, 1, IsGaussian; kwargs...)
+end
+
+function Base.rand(state::StateVector, n::Integer, ::Type{IsGaussian}; kwargs...)
+    return rand(StateMatrix(state), n, IsGaussian; kwargs...)
+end
+
+function Base.rand(state::StateVector, ::Type{IsGaussian}; kwargs...)
+    return rand(StateMatrix(state), 1, IsGaussian; kwargs...)
+end
+
+# ===
+
+function Base.rand(state::StateMatrix, n::Integer; kwargs...)
+    return nongaussian_state_sampler(state, n; kwargs...)
+end
+
+function Base.rand(state::StateMatrix; kwargs...)
+    return rand(state, 1; kwargs...)
+end
+
+function Base.rand(state::StateVector, n::Integer; kwargs...)
+    return rand(StateMatrix(state), n; kwargs...)
+end
+
+function Base.rand(state::StateVector; kwargs...)
+    return rand(StateMatrix(state), 1; kwargs...)
 end

@@ -12,7 +12,7 @@ using KernelDensity
 
     n = 100000
     data = gaussian_state_sampler(state, n)
-    sampled_pdf = pdf(kde((LinRange(0, 2π, n), data)), θs, xs)
+    sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
 
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n < 5e-5
 end
@@ -34,14 +34,31 @@ end
     @test single_point_pdf.(θs, xs') ≈ ground_truth_pdf
 
     n = 4096
-    data = nongaussian_state_sampler(state; n=n, show_log=false)
+    data = nongaussian_state_sampler(state, n)
     sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
+    @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
 
+    n = 4096-1
+    data = nongaussian_state_sampler(state, n)
+    sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
 
     n = 4100
-    data = nongaussian_state_sampler(state; n=n, show_log=false)
+    data = nongaussian_state_sampler(state, n, warm_up_n=100, batch_size=97)
     sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
-
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
+end
+
+@testset "wrapping" begin
+    state = VacuumState()
+    @test size(rand(state, IsGaussian)) == (2, 1)
+    @test size(rand(state, 4096, IsGaussian)) == (2, 4096)
+    @test size(rand(state, 4100, IsGaussian, bias_phase=π/4)) == (2, 4100)
+
+    state = SinglePhotonState()
+    @test size(rand(state)) == (2, 1)
+    @test size(rand(state, 4096, show_log=false)) == (2, 4096)
+    @test size(rand(state, 4100, warm_up_n=97, show_log=false)) == (2, 4100)
+    @test size(rand(state, 4100, warm_up_n=97, batch_size=100, show_log=false)) == (2, 4100)
+    @test size(rand(state, 100, warm_up_n=200, batch_size=100, show_log=false)) == (2, 100)
 end
