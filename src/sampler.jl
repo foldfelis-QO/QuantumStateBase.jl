@@ -46,6 +46,17 @@ function ranged_rand(range::Tuple{T, T}) where {T <: Number}
     return range[1] + (range[2]-range[1]) * rand(T)
 end
 
+function reject!(new_points, gen_point, p, g, c)
+    Threads.@threads for i in 1:size(new_points, 2)
+        new_points[:, i] .= gen_point()
+        while p(Threads.threadid(), new_points[:, i]...) / g(new_points[:, i]...) < c
+            new_points[:, i] .= gen_point()
+        end
+    end
+
+    return new_points
+end
+
 function nongaussian_state_sampler(
     state;
     n=4096, warm_up_n=128, batch_size=64, c=0.9, θ_range=(0., 2π), x_range=(-10., 10.),
@@ -92,21 +103,24 @@ function nongaussian_state_sampler!(
         g = (θ, x) -> pdf(kde_result, θ, x)
         reject!(new_points, gen_point_from_g, p, g, c)
 
-        show_log && @info "progress: $b/$batch"
+        show_log && @info "progress: $b/$(batch+1)"
     end
+    rem_n = rem(n-warm_up_n, batch_size)
+    if  rem_n > 0
+        ref_range = 1:(n-rem_n)
+        ref_points = view(sampled_points, :, ref_range)
+        new_range = (n-rem_n+1):n
+        new_points = view(sampled_points, :, new_range)
+
+        h = KernelDensity.default_bandwidth((ref_points[1, :], ref_points[2, :]))
+        gen_point_from_g = () -> ref_points[:, rand(ref_range)] + randn(2)./h
+        kde_result = kde((ref_points[1, :], ref_points[2, :]), bandwidth=h)
+        g = (θ, x) -> pdf(kde_result, θ, x)
+        reject!(new_points, gen_point_from_g, p, g, c)
+    end
+    show_log && @info "progress: $(batch+1)/$(batch+1)"
 
     sampled_points .= sampled_points[:, sortperm(sampled_points[1, :])]
 
     return sampled_points
-end
-
-function reject!(new_points, gen_point, p, g, c)
-    Threads.@threads for i in 1:size(new_points, 2)
-        new_points[:, i] .= gen_point()
-        while p(Threads.threadid(), new_points[:, i]...) / g(new_points[:, i]...) < c
-            new_points[:, i] .= gen_point()
-        end
-    end
-
-    return new_points
 end

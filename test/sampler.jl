@@ -38,4 +38,10 @@ end
     sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
 
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
+
+    n = 4100
+    data = nongaussian_state_sampler(state; n=n, show_log=false)
+    sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
+
+    @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
 end
