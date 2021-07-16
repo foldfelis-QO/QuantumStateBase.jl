@@ -69,16 +69,14 @@ function nongaussian_state_sampler!(
     show_log::Bool
 ) where {T}
     n = size(sampled_points, 2)
-    kde_result = kde((ranged_rand(n, θ_range), ranged_rand(n, x_range)))
-    g = (θ, x) -> pdf(kde_result, θ, x)
+    p = (thread_id, θ, x) -> q_pdf!(𝛑̂_res_vec[thread_id], state, θ, x)
 
     show_log && @info "Warm up"
-    Threads.@threads for i in 1:warm_up_n
-        sampled_points[:, i] .= [ranged_rand(θ_range), ranged_rand(x_range)]
-        while q_pdf!(𝛑̂_res_vec[Threads.threadid()], state, sampled_points[:, i]...)/g(sampled_points[:, i]...)<c
-            sampled_points[:, i] .= [ranged_rand(θ_range), ranged_rand(x_range)]
-        end
-    end
+    warm_up_points = view(sampled_points, :, 1:warm_up_n)
+    gen_rand_point = () -> [ranged_rand(θ_range), ranged_rand(x_range)]
+    kde_result = kde((ranged_rand(n, θ_range), ranged_rand(n, x_range)))
+    g = (θ, x) -> pdf(kde_result, θ, x)
+    reject!(warm_up_points, gen_rand_point, p, g, c)
 
     show_log && @info "Start to generate data"
     batch = div(n-warm_up_n, batch_size)
@@ -89,14 +87,10 @@ function nongaussian_state_sampler!(
         new_points = view(sampled_points, :, new_range)
 
         h = KernelDensity.default_bandwidth((ref_points[1, :], ref_points[2, :]))
+        gen_point_from_g = () -> ref_points[:, rand(ref_range)] + randn(2)./h
         kde_result = kde((ref_points[1, :], ref_points[2, :]), bandwidth=h)
         g = (θ, x) -> pdf(kde_result, θ, x)
-        Threads.@threads for i in 1:batch_size
-            new_points[:, i] .= ref_points[:, rand(ref_range)] + randn(2)./h
-            while q_pdf!(𝛑̂_res_vec[Threads.threadid()], state, new_points[:, i]...)/g(new_points[:, i]...)<c || !(θ_range[1]≤new_points[1, i]≤θ_range[2])
-                new_points[:, i] .= ref_points[:, rand(ref_range)] + randn(2)./h
-            end
-        end
+        reject!(new_points, gen_point_from_g, p, g, c)
 
         show_log && @info "progress: $b/$batch"
     end
@@ -104,4 +98,15 @@ function nongaussian_state_sampler!(
     sampled_points .= sampled_points[:, sortperm(sampled_points[1, :])]
 
     return sampled_points
+end
+
+function reject!(new_points, gen_point, p, g, c)
+    Threads.@threads for i in 1:size(new_points, 2)
+        new_points[:, i] .= gen_point()
+        while p(Threads.threadid(), new_points[:, i]...) / g(new_points[:, i]...) < c
+            new_points[:, i] .= gen_point()
+        end
+    end
+
+    return new_points
 end
