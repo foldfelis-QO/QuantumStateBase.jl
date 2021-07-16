@@ -34,17 +34,17 @@ end
     @test single_point_pdf.(θs, xs') ≈ ground_truth_pdf
 
     n = 4096
-    data = nongaussian_state_sampler(state, n)
+    data = state_sampler(state, n)
     sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
 
     n = 4096-1
-    data = nongaussian_state_sampler(state, n)
+    data = state_sampler(state, n)
     sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
 
     n = 4100
-    data = nongaussian_state_sampler(state, n, warm_up_n=100, batch_size=97)
+    data = state_sampler(state, n, warm_up_n=100, batch_size=97)
     sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
     @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
 end

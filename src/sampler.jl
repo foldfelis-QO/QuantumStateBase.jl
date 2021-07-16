@@ -3,14 +3,23 @@ using KernelDensity
 export
     gaussian_state_sampler,
     gaussian_state_sampler!,
-    nongaussian_state_sampler,
-    nongaussian_state_sampler!,
+    state_sampler,
+    state_sampler!,
     IsGaussian
 
 ###########################
 # gaussian data generator #
 ###########################
 
+"""
+    gaussian_state_sampler(state::StateMatrix, n::Integer; bias_phase=0.)
+
+Random points sampled from quadrature probability density function of Gaussian `state`.
+
+* `state`: Quantum state.
+* `n`: N points.
+* `bias_phase`: The offset of the θ coordinate
+"""
 function gaussian_state_sampler(state::StateMatrix, n::Integer; bias_phase=0.)
     points = Matrix{Float64}(undef, 2, n)
 
@@ -39,6 +48,7 @@ end
 ##############################
 # nongaussian data generator #
 ##############################
+
 function ranged_rand(n, range::Tuple{T, T}) where {T <: Number}
     return range[1] .+ (range[2]-range[1]) * rand(T, n)
 end
@@ -58,7 +68,23 @@ function reject!(new_points, gen_point, p, g, c)
     return new_points
 end
 
-function nongaussian_state_sampler(
+"""
+    state_sampler(
+        state::StateMatrix, n::Integer;
+        warm_up_n=128, batch_size=64, c=0.9, θ_range=(0., 2π), x_range=(-10., 10.),
+        show_log=false
+    )
+
+Random points sampled from quadrature probability density function of Gaussian `state`.
+
+* `state`: Quantum state.
+* `n`: N points.
+* `warm_up_n`: N points sampled from uniform random and accepted by rejection method.
+* `batch_size`: Adapt `g` for every `batch_size` points.
+* `θ_range`: Sampling range of θ.
+* `x_range`: Sampling range of x.
+"""
+function state_sampler(
     state, n;
     warm_up_n=128, batch_size=64, c=0.9, θ_range=(0., 2π), x_range=(-10., 10.),
     show_log=false
@@ -66,7 +92,7 @@ function nongaussian_state_sampler(
     sampled_points = Matrix{Float64}(undef, 2, n)
     𝛑̂_res_vec = [Matrix{complex(Float64)}(undef, state.dim, state.dim) for _ in 1:Threads.nthreads()]
 
-    return nongaussian_state_sampler!(
+    return state_sampler!(
         sampled_points, 𝛑̂_res_vec,
         state,
         warm_up_n, batch_size, c, θ_range, x_range,
@@ -74,7 +100,7 @@ function nongaussian_state_sampler(
     )
 end
 
-function nongaussian_state_sampler!(
+function state_sampler!(
     sampled_points::Matrix{T}, 𝛑̂_res_vec::Vector{Matrix{Complex{T}}},
     state::StateMatrix,
     warm_up_n::Integer, batch_size::Integer, c::Real, θ_range, x_range,
@@ -175,10 +201,10 @@ Random points sampled from quadrature probability density function of `state`.
 
 * `state`: Quantum state.
 * `n`: n points.
-* `kwargs...`: see `nongaussian_state_sampler`
+* `kwargs...`: see `state_sampler`
 """
 function Base.rand(state::StateMatrix, n::Integer; kwargs...)
-    return nongaussian_state_sampler(state, n; kwargs...)
+    return state_sampler(state, n; kwargs...)
 end
 
 """
@@ -188,7 +214,7 @@ One random point sampled from quadrature probability density function of `state`
 
 * `state`: Quantum state.
 * `n`: n points.
-* `kwargs...`: see `nongaussian_state_sampler`
+* `kwargs...`: see `state_sampler`
 """
 function Base.rand(state::StateMatrix; kwargs...)
     return rand(state, 1; kwargs...)
