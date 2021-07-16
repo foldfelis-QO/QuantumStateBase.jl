@@ -6,6 +6,8 @@ real_tr_mul(𝐚, 𝐛) = sum(real(𝐚[i, :]' * 𝐛[:, i]) for i in 1:size(�
 
 """
     q_pdf(state::AbstractState, θ::Real, x::Real; T=Float64)
+
+Quadrature prabability at point (θ, x)
 """
 function q_pdf(state::AbstractState, θ::Real, x::Real; T=Float64)
     𝛑̂_res = Matrix{complex(T)}(undef, state.dim, state.dim)
@@ -21,6 +23,11 @@ function q_pdf!(𝛑̂_res::Matrix{Complex{T}}, state::StateVector, args...; kwa
     return q_pdf!(𝛑̂_res, StateMatrix(state), args...; kwargs...)
 end
 
+"""
+    q_pdf(state::AbstractState, θ::Real, x::Real; T=Float64)
+
+Quadrature prabability at points (θs, xs)
+"""
 function q_pdf(state::AbstractState, θs, xs; T=Float64)
     𝛑̂_res_vec = [Matrix{complex(T)}(undef, state.dim, state.dim) for _ in 1:Threads.nthreads()]
     𝐩 = Matrix{T}(undef, length(θs), length(xs))
