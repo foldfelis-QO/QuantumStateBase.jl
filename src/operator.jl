@@ -146,13 +146,15 @@ annihilate(state::AbstractState) = annihilate!(copy(state))
     ComplexVec{T <: Real}(r::T, θ::T)
 
 Vector in polar coordinate for complex plane.
+
+``v = r e^{-i\\theta}``
 """
 struct ComplexVec{T <: Real}
     r::T
     θ::T
 end
 
-Base.show(io::IO, complexvec::ComplexVec{T}) where {T} = print(io, "ComplexVec{$T}($(complexvec.r)exp($(complexvec.θ)im))")
+Base.show(io::IO, complexvec::ComplexVec{T}) where {T} = print(io, "ComplexVec{$T}($(complexvec.r)exp(-$(complexvec.θ)im))")
 
 z(complexvec::ComplexVec{<:Real}) = complexvec.r * exp(-im * complexvec.θ)
 
