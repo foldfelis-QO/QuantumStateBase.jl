@@ -28,7 +28,7 @@ Quantum states for quantum optics
 [website link]: https://foldfelis-qo.github.io/QuantumStateBase.jl
 
 <p align="center">
-  <img src="docs/src/assets/logo.png" alt="QuantumStateBase" width="400"/>
+  <img src="docs/src/assets/logo.png" alt="QuantumStateBase" width="50%"/>
 </p>
 
 ## Installation
@@ -56,4 +56,4 @@ julia> w = wf(state);
 julia> heatmap(w.x_range, w.p_range,  w.𝐰_surface')
 ```
 
-![](docs/src/assets/squeezed_thermal_heatmap.png)
+<img src="docs/src/assets/squeezed_thermal_heatmap.png" width="50%"/>

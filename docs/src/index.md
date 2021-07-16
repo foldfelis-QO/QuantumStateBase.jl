@@ -31,4 +31,6 @@ julia> w = wf(state);
 julia> heatmap(w.x_range, w.p_range,  w.𝐰_surface')
 ```
 
-![](assets/squeezed_thermal_heatmap.png)
+```@raw html
+<img src="assets/squeezed_thermal_heatmap.png" width="50%"/>
+```
