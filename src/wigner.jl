@@ -1,5 +1,3 @@
-using Mmap
-
 export
     wigner,
     WignerFunction,
