@@ -1,6 +1,20 @@
 export
     laguerre
 
+"""
+    laguerre(n::Integer, α::Integer, x::Real)
+
+Generalized Laguerre polynomials
+
+# Examples
+```jldoctest
+julia> laguerre(0, 1, 5)
+1
+
+julia> laguerre(1, 3, 5)
+-1
+```
+"""
 function laguerre(n::Integer, α::Integer, x::T) where {T<:Real}
     if n == 0
         return one(T)
@@ -17,6 +31,19 @@ function laguerre(n::Integer, α::Integer, x::T) where {T<:Real}
     end
 end
 
+"""
+    laguerre(n::Integer, α::Integer)(x::Real)
+
+Generalized Laguerre polynomials
+
+# Examples
+```jldoctest
+julia> L = laguerre(1, 3);
+
+julia> L(5)
+-1
+```
+"""
 laguerre(n::Integer, α::Integer) = x -> laguerre(n, α, x)
 
 # function hermite(n::T, x::Real) where {T <: Integer}

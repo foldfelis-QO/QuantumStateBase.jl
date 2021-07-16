@@ -6,7 +6,7 @@ export
     annihilate!,
     annihilate,
 
-    Arg,
+    ComplexVec,
     α,
     ξ,
 
@@ -20,8 +20,30 @@ export
 # a† and a #
 ############
 
+"""
+    Creation(; dim=DIM)
+
+Creation operator in matrix representation
+
+``\\hat{a}^{\\dagger}``
+"""
 Creation(; dim=DIM) = diagm(-1 => sqrt.(1:dim-1))
 
+"""
+    create!(state::AbstractState)
+
+Apply creation operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> create!(state);
+
+julia> vec(state) == vec(SinglePhotonState())
+true
+```
+"""
 function create!(state::StateVector{<:Number})
     dim = state.dim
     state.v = Creation(dim=dim) * state.v
@@ -37,10 +59,50 @@ function create!(state::StateMatrix{<:Number})
     return state
 end
 
+"""
+    create(state::AbstractState)
+
+Apply creation operator on the new instance of the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> new_state = create(state);
+
+julia> vec(state) == vec(VacuumState())
+true
+
+julia> vec(new_state) == vec(SinglePhotonState())
+true
+```
+"""
 create(state::AbstractState) = create!(copy(state))
 
+"""
+    Annihilation(; dim=DIM)
+
+Annihilation operator in matrix representation
+
+``\\hat{a}``
+"""
 Annihilation(; dim=DIM) = diagm(1 => sqrt.(1:dim-1))
 
+"""
+    annihilate!(state::AbstractState)
+
+Apply annihilation operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = SinglePhotonState();
+
+julia> annihilate!(state);
+
+julia> vec(state) == vec(VacuumState())
+true
+```
+"""
 function annihilate!(state::StateVector{<:Number})
     dim = state.dim
     state.v = Annihilation(dim=dim) * state.v
@@ -56,40 +118,110 @@ function annihilate!(state::StateMatrix{<:Number})
     return state
 end
 
+"""
+    annihilate!(state::AbstractState)
+
+Apply annihilation operator on the new instance of the quantum state.
+
+# Examples
+```jldoctest
+julia> state = SinglePhotonState();
+
+julia> new_state = annihilate(state);
+
+julia> vec(state) == vec(SinglePhotonState())
+true
+
+julia> vec(new_state) == vec(VacuumState())
+true
+```
+"""
 annihilate(state::AbstractState) = annihilate!(copy(state))
 
 ###########
 # α and ξ #
 ###########
 
-struct Arg{T <: Real}
+"""
+    ComplexVec{T <: Real}(r::T, θ::T)
+
+Vector in polar coordinate for complex plane.
+
+``v = r e^{-i\\theta}``
+"""
+struct ComplexVec{T <: Real}
     r::T
     θ::T
 end
 
-Base.show(io::IO, arg::Arg{T}) where {T} = print(io, "Arg{$T}($(arg.r)exp($(arg.θ)im))")
+Base.show(io::IO, complexvec::ComplexVec{T}) where {T} = print(io, "ComplexVec{$T}($(complexvec.r)exp(-$(complexvec.θ)im))")
 
-z(arg::Arg{<:Real}) = arg.r * exp(-im * arg.θ)
+z(complexvec::ComplexVec{<:Real}) = complexvec.r * exp(-im * complexvec.θ)
 
-α(r::T, θ::T) where {T} = Arg{T}(r, θ)
+"""
+    α(r::Real, θ::Real)
+
+Eigenvalue of annihilation operator.
+
+``\\hat{a} | \\alpha \\rangle = \\alpha | \\alpha \\rangle``
+
+# Examples
+```jldoctest
+julia> α(1.5, π/4)
+ComplexVec{Float64}(1.5exp(-0.7853981633974483im))
+```
+"""
+α(r::T, θ::T) where {T} = ComplexVec{T}(r, θ)
+
+"""
+    ξ(r::Real, θ::Real)
+
+# Examples
+```jldoctest
+julia> ξ(1.5, π/4)
+ComplexVec{Float64}(1.5exp(-0.7853981633974483im))
+```
+"""
 const ξ = α
 
 ################
 # displacement #
 ################
 
-function Displacement(α::Arg{<:Real}; dim=DIM)
+"""
+    Displacement(α::ComplexVec{<:Real}; dim=DIM)
+
+Displacement operator in matrix representation
+
+``\\hat{D}(\\alpha) = exp(\\alpha \\hat{a}^{\\dagger} - \\alpha^{*} \\hat{a})``
+"""
+function Displacement(α::ComplexVec{<:Real}; dim=DIM)
     return exp(z(α) * Creation(dim=dim) - z(α)' * Annihilation(dim=dim))
 end
 
-function displace!(state::StateVector{<:Number}, α::Arg{<:Real})
+"""
+    displace!(state::AbstractState)
+
+Apply displacement operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> displace!(state, α(5., π/4));
+
+julia> vec(state) == vec(CoherentState(α(5., π/4)))
+true
+```
+"""
+function displace!(state::StateVector{<:Number}, α::ComplexVec{<:Real})
     dim = state.dim
     state.v = Displacement(α, dim=dim) * state.v
 
     return state
 end
 
-function displace!(state::StateMatrix{<:Number}, α::Arg{<:Real})
+function displace!(state::StateMatrix{<:Number}, α::ComplexVec{<:Real})
     dim = state.dim
     𝐝 = Displacement(α, dim=dim)
     state.𝛒 = 𝐝 * state.𝛒 * 𝐝'
@@ -101,18 +233,40 @@ end
 # squeezing #
 #############
 
-function Squeezing(ξ::Arg{<:Real}; dim=DIM)
+"""
+    Squeezing(ξ::ComplexVec{<:Real}; dim=DIM)
+
+Squeezing operator in matrix representation
+
+``\\hat{S}(\\xi) = exp(\\frac{1}{2} (\\xi^{*} \\hat{a}^{2} - \\xi \\hat{a}^{\\dagger 2}))``
+"""
+function Squeezing(ξ::ComplexVec{<:Real}; dim=DIM)
     return exp(0.5 * z(ξ)' * Annihilation(dim=dim)^2 - 0.5 * z(ξ) * Creation(dim=dim)^2)
 end
 
-function squeeze!(state::StateVector{<:Number}, ξ::Arg{<:Real})
+"""
+    squeeze!(state::AbstractState)
+
+Apply squeezing operator on the quantum state.
+
+# Examples
+```jldoctest
+julia> state = VacuumState();
+
+julia> squeeze!(state, α(0.5, π/4));
+
+julia> vec(state) == vec(SqueezedState(ξ(0.5, π/4)))
+true
+```
+"""
+function squeeze!(state::StateVector{<:Number}, ξ::ComplexVec{<:Real})
     dim = state.dim
     state.v = Squeezing(ξ, dim=dim) * state.v
 
     return state
 end
 
-function squeeze!(state::StateMatrix{<:Number}, ξ::Arg{<:Real})
+function squeeze!(state::StateMatrix{<:Number}, ξ::ComplexVec{<:Real})
     dim = state.dim
     𝐬 = Squeezing(ξ, dim=dim)
     state.𝛒 = 𝐬 * state.𝛒 * 𝐬'
