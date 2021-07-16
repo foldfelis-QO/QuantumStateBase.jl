@@ -24,6 +24,8 @@ export
     Creation(; dim=DIM)
 
 Creation operator in matrix representation
+
+``\\hat{a}^{\\dagger}``
 """
 Creation(; dim=DIM) = diagm(-1 => sqrt.(1:dim-1))
 
@@ -81,6 +83,8 @@ create(state::AbstractState) = create!(copy(state))
     Annihilation(; dim=DIM)
 
 Annihilation operator in matrix representation
+
+``\\hat{a}``
 """
 Annihilation(; dim=DIM) = diagm(1 => sqrt.(1:dim-1))
 
@@ -138,6 +142,11 @@ annihilate(state::AbstractState) = annihilate!(copy(state))
 # α and ξ #
 ###########
 
+"""
+    Arg{T <: Real}(r::T, θ::T)
+
+Argument for complex plane.
+"""
 struct Arg{T <: Real}
     r::T
     θ::T
@@ -147,7 +156,30 @@ Base.show(io::IO, arg::Arg{T}) where {T} = print(io, "Arg{$T}($(arg.r)exp($(arg.
 
 z(arg::Arg{<:Real}) = arg.r * exp(-im * arg.θ)
 
+"""
+    α(r::Real, θ::Real)
+
+Eigenvalue of annihilation operator.
+
+``\\hat{a} | \\alpha \\rangle = \\alpha | \\alpha \\rangle``
+
+# Examples
+```jldoctest
+julia> α(1.5, π/4)
+Arg{Float64}(1.5exp(0.7853981633974483im))
+```
+"""
 α(r::T, θ::T) where {T} = Arg{T}(r, θ)
+
+"""
+    ξ(r::Real, θ::Real)
+
+# Examples
+```jldoctest
+julia> ξ(1.5, π/4)
+Arg{Float64}(1.5exp(0.7853981633974483im))
+```
+"""
 const ξ = α
 
 ################
