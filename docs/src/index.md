@@ -6,11 +6,11 @@ CurrentModule = QuantumStateBase
 
 Documentation for [QuantumStateBase](https://github.com/foldfelis-QO/QuantumStateBase.jl).
 
-## Index
-```@index
-```
+## Installation
 
-## APIs
-```@autodocs
-Modules = [QuantumStateBase]
+The package can be installed with the Julia package manager.
+From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+
+```julia-repl
+pkg> add QuantumStateBase
 ```
