@@ -44,7 +44,7 @@ end
 To get the vector of a pure quantum state.
 
 # Examples
-```jldoctest
+```julia-repl
 julia> state = FockState(1);
 
 julia> vec(state)
@@ -63,7 +63,7 @@ Base.vec(state::StateVector{<:Number}) = state.v
 To get the density matrix of a pure quantum state.
 
 # Examples
-```jldoctest
+```julia-repl
 julia> state = FockState(1);
 
 julia> 𝛒(state)
@@ -169,7 +169,7 @@ end
 To get the density matrix of a pure quantum state.
 
 # Examples
-```jldoctest
+```julia-repl
 julia> state = FockState(1);
 
 julia> 𝛒(state)
