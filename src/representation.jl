@@ -1,5 +1,3 @@
-# using Crayons
-
 export
     AbstractState,
     StateVector,
@@ -30,19 +28,6 @@ function Base.show(io::IO, state::StateVector{T}) where {T}
     Base.print_matrix(IOContext(io, :limit=>true), state.v)
     print(io, "\n])")
 end
-
-# function Base.show(io::IO, state::StateVector{T}) where {T}
-#     print(io, "StateVector{$T}( ")
-#     v = abs2.(state.v)
-#     v /= maximum(v)
-#     for p in v
-#         c = convert(RGB, HSL(0, p, 0.7))
-#         print(io, "$(Crayon(foreground=(
-#             round(Int, c.r * 255), round(Int, c.g * 255), round(Int, c.b * 255)
-#         )))\u2587")
-#     end
-#     print(io, "$(Crayon(reset=true)) )")
-# end
 
 """
     Base.vec(state::StateVector{<:Number})
@@ -138,24 +123,6 @@ function Base.show(io::IO, state::StateMatrix{T}) where {T}
     Base.print_matrix(IOContext(io, :limit=>true), state.𝛒)
     print(io, "\n])")
 end
-
-# function Base.show(io::IO, state::StateMatrix{T}) where {T}
-#     function show_𝛒(𝛒::Matrix{<:Real})
-#         for (i, p) in enumerate(𝛒)
-#             c = (p>0) ? convert(RGB, HSL(0, p, 0.7)) : convert(RGB, HSL(240, abs(p), 0.7))
-#             print(io, "$(Crayon(foreground=(
-#                 round(Int, c.r * 255), round(Int, c.g * 255), round(Int, c.b * 255)
-#             )))\u2587")
-#             (i%state.dim == 0) && println(io)
-#         end
-#     end
-
-#     println(io, "StateMatrix{$T}(")
-#     𝛒_r = real(state.𝛒)
-#     𝛒_r /= maximum(abs.(𝛒_r))
-#     show_𝛒(𝛒_r)
-#     print(io, "$(Crayon(reset=true)))")
-# end
 
 """
     StateMatrix(state::StateVector{<:Number})
