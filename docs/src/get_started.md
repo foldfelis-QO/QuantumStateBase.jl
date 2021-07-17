@@ -212,7 +212,7 @@ julia> heatmap(w.x_range, w.p_range,  w.𝐰_surface')
 ```
 
 ```@raw html
-<img src="assets/squeezed_thermal_heatmap.png" width="50%"/>
+<img src="../assets/squeezed_thermal_heatmap.png" width="50%"/>
 ```
 
 ## Quadrature probability density function
@@ -236,7 +236,7 @@ julia> heatmap(θs, xs, ps')
 
 ```@raw html
 
-<img src="assets/squeezed_thermal_quad.png" width="50%"/>
+<img src="../assets/squeezed_thermal_quad.png" width="50%"/>
 ```
 
 ## Quantum state sampler
@@ -251,5 +251,5 @@ julia> scatter(points[1, :], points[2, :])
 ```
 
 ```@raw html
-<img src="assets/squeezed_thermal_sampled.png" width="50%"/>
+<img src="../assets/squeezed_thermal_sampled.png" width="50%"/>
 ```
