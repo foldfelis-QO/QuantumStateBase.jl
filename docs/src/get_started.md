@@ -1,4 +1,4 @@
-# Quick start guide
+# Get started
 
 `QuantumStateBase` is a library to construct common quantum states for the study of quantum optics.
 
@@ -168,4 +168,88 @@ StateMatrix{ComplexF64}(dim=70, 𝛒=[
  -2.5492078509163883e-34 - 3.277032527478944e-21im                         0.0 + 0.0im
                      0.0 + 0.0im                        1.0347686817817904e-18 + 4.513898307157584e-36im
 ])
+```
+
+## Wigner function
+
+Wigner function is introduced by Eugene Winger, who describe quantum state using revised classical probability theory.
+
+The quasi probability distribution is defined as:
+
+```math
+W_{mn}(x, p) = \frac{1}{2\pi} \int_{-\infty}^{\infty} dy \, e^{-ipy/h} \psi_m^*(x+\frac{y}{2}) \psi_n(x-\frac{y}{2})
+```
+
+Owing to the fact that the Moyal function is a generalized Wigner function. We can therefore implies that
+
+```math
+W(x, p) = \sum_{m, n} \rho_{m, n} W_{m, n}(x, p)
+```
+
+Here, ``\rho`` is the density matrix of the quantum state, defined as:
+
+```math
+\rho = \sum_{m, n} p_{m, n} | m \rangle \langle n |
+```
+
+And, ``W_{m, n}(x, p)`` is the generalized Wigner function
+
+```math
+W_{m, n} = \{ \begin{array}{rcl}
+\frac{1}{\pi} exp[-(x^2 + y^2)] (-1)^m  \sqrt{2^{n-m} \frac{m!}{n!}} (x-ip)^{n-m} L_m^{n-m} (2x^2 + 2p^2), \, n \geq m \\
+\frac{1}{\pi} exp[-(x^2 + y^2)] (-1)^n  \sqrt{2^{m-n} \frac{n!}{m!}} (x+ip)^{m-n} L_n^{m-n} (2x^2 + 2p^2), \, n < m \\
+\end{array}
+```
+
+```julia
+julia> state = SqueezedThermalState(ξ(0.5, 3π/2), 0.3);
+
+julia> wf = WignerFunction(-10:0.1:10, -10:0.1:10);
+
+julia> w = wf(state);
+
+julia> heatmap(w.x_range, w.p_range,  w.𝐰_surface')
+```
+
+```@raw html
+<img src="assets/squeezed_thermal_heatmap.png" width="50%"/>
+```
+
+## Quadrature probability density function
+
+Usually, we describe a quantum state using two non-commuting observables `X`(position) and `P`(momentum) in phase space.
+The joint distribution is also known as Wigner function.
+
+In experiments, we measure the E field of the light using the homodyne detector.
+The phase of the wave are the eigenvalues of the quadrature operator ``X_{\theta}``
+where ``X_{\theta = 0} = X`` and ``X_{\theta = \pi/2} = P``
+
+```julia
+julia> θs = LinRange(0, 2π, 100);
+
+julia> xs = LinRange(-10, 10, 100);
+
+julia> ps = q_pdf(state, θs, xs);
+
+julia> heatmap(θs, xs, ps')
+```
+
+```@raw html
+
+<img src="assets/squeezed_thermal_quad.png" width="50%"/>
+```
+
+## Quantum state sampler
+
+Here, we can sample points from quadrature probability density function of the quantum state.
+The sampler is implemented by special adaptive rejection method.
+
+```julia
+julia> points = rand(state, 4096);
+
+julia> scatter(points[1, :], points[2, :])
+```
+
+```@raw html
+<img src="assets/squeezed_thermal_sampled.png" width="50%"/>
 ```
