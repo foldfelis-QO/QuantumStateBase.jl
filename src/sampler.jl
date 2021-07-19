@@ -27,7 +27,7 @@ function gaussian_state_sampler(state::AbstractState, n::Integer; bias_phase=0.)
 end
 
 function gaussian_state_sampler!(
-    points::Matrix{T},
+    points::AbstractMatrix{T},
     state::StateMatrix, bias_phase::T
 ) where {T}
     n = size(points, 2)
@@ -46,7 +46,7 @@ function gaussian_state_sampler!(
 end
 
 function gaussian_state_sampler!(
-    points::Matrix{T},
+    points::AbstractMatrix{T},
     state::StateVector, bias_phase::T
 ) where {T}
     return gaussian_state_sampler!(points, StateMatrix(state), bias_phase)
@@ -111,7 +111,7 @@ function state_sampler(
 end
 
 function state_sampler!(
-    sampled_points::Matrix{T}, 𝛑̂_res_vec::Vector{Matrix{Complex{T}}},
+    sampled_points::AbstractMatrix{T}, 𝛑̂_res_vec::Vector{Matrix{Complex{T}}},
     state::StateMatrix,
     warm_up_n::Integer, batch_size::Integer, c::Real, θ_range, x_range,
     show_log::Bool
@@ -164,7 +164,7 @@ function state_sampler!(
 end
 
 function state_sampler!(
-    sampled_points::Matrix{T}, 𝛑̂_res_vec::Vector{Matrix{Complex{T}}},
+    sampled_points::AbstractMatrix{T}, 𝛑̂_res_vec::Vector{Matrix{Complex{T}}},
     state::StateVector,
     args...
 ) where {T}
