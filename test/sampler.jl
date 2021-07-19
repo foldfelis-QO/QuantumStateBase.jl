@@ -68,11 +68,11 @@ end
     state = VacuumState()
     @test size(rand(state, IsGaussian)) == (2, 1)
     @test size(rand(state, 4096, IsGaussian)) == (2, 4096)
-    @test size(rand(state, 4100, IsGaussian, bias_phase=π/4)) == (2, 4100)
+    @test size(rand(state, 4100, IsGaussian, θ_offset=π/4)) == (2, 4100)
     state = VacuumState(rep=StateMatrix)
     @test size(rand(state, IsGaussian)) == (2, 1)
     @test size(rand(state, 4096, IsGaussian)) == (2, 4096)
-    @test size(rand(state, 4100, IsGaussian, bias_phase=π/4)) == (2, 4100)
+    @test size(rand(state, 4100, IsGaussian, θ_offset=π/4)) == (2, 4100)
 
     state = SinglePhotonState()
     @test size(rand(state)) == (2, 1)
