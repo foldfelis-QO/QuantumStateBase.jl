@@ -189,7 +189,13 @@ W(x, p) = \sum_{m, n} \rho_{m, n} W_{m, n}(x, p)
 Here, ``\rho`` is the density matrix of the quantum state, defined as:
 
 ```math
-\rho = \sum_{m, n} p_{m, n} | m \rangle \langle n |
+\rho = \sum_{m, n, i} \, p_i \, | n \rangle \langle n | \hat{\rho}_i | m \rangle \langle m |
+```
+```math
+\hat{\rho}_i = | \psi_i \rangle \langle \psi_i |
+```
+```math
+\hat{\rho}_i \, \text{is a density operator of pure state.}
 ```
 
 And, ``W_{m, n}(x, p)`` is the generalized Wigner function
@@ -220,7 +226,7 @@ julia> heatmap(w.x_range, w.p_range,  w.𝐰_surface')
 Usually, we describe a quantum state using two non-commuting observables `X`(position) and `P`(momentum) in phase space.
 The joint distribution is also known as Wigner function.
 
-In experiments, we measure the E field of the light using the homodyne detector.
+In homodyne experiments, we measure the E field of the light using the homodyne detector.
 The phase of the wave are the eigenvalues of the quadrature operator ``X_{\theta}``
 where ``X_{\theta = 0} = X`` and ``X_{\theta = \pi/2} = P``
 
@@ -235,7 +241,6 @@ julia> heatmap(θs, xs, ps')
 ```
 
 ```@raw html
-
 <img src="../assets/squeezed_thermal_quad.png" width="50%"/>
 ```
 
