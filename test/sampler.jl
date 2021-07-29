@@ -48,20 +48,10 @@ end
     single_point_pdf = (θ, x) -> q_pdf(state, θ, x)
     @test single_point_pdf.(θs, xs') ≈ ground_truth_pdf
 
-    n = 4096
-    data = state_sampler(state, n)
+    n = 10000
+    @time data = state_sampler(state, n)
     sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
-    @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
-
-    n = 4096-1
-    data = state_sampler(state, n)
-    sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
-    @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
-
-    n = 4100
-    data = state_sampler(state, n, warm_up_n=100, batch_size=97)
-    sampled_pdf = pdf(kde((data[1, :], data[2, :])), θs, xs)
-    @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-2
+    @test sum(abs.(sampled_pdf .- ground_truth_pdf)) / n  < 5e-4
 end
 
 @testset "wrapping" begin
@@ -76,14 +66,8 @@ end
 
     state = SinglePhotonState()
     @test size(rand(state)) == (2, 1)
-    @test size(rand(state, 4096, show_log=false)) == (2, 4096)
-    @test size(rand(state, 4100, warm_up_n=97, show_log=false)) == (2, 4100)
-    @test size(rand(state, 4100, warm_up_n=97, batch_size=100, show_log=false)) == (2, 4100)
-    @test size(rand(state, 100, warm_up_n=200, batch_size=100, show_log=false)) == (2, 100)
+    @test size(rand(state, 4096)) == (2, 4096)
     state = SinglePhotonState(rep=StateMatrix)
     @test size(rand(state)) == (2, 1)
-    @test size(rand(state, 4096, show_log=false)) == (2, 4096)
-    @test size(rand(state, 4100, warm_up_n=97, show_log=false)) == (2, 4100)
-    @test size(rand(state, 4100, warm_up_n=97, batch_size=100, show_log=false)) == (2, 4100)
-    @test size(rand(state, 100, warm_up_n=200, batch_size=100, show_log=false)) == (2, 100)
+    @test size(rand(state, 4096)) == (2, 4096)
 end

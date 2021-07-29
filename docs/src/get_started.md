@@ -247,7 +247,7 @@ julia> heatmap(θs, xs, ps')
 ## Quantum state sampler
 
 Here, we can sample points from quadrature probability density function of the quantum state.
-The sampler is implemented by special adaptive rejection method.
+The sampler is implemented by rejection method.
 
 ```julia
 julia> points = rand(state, 4096);

@@ -1,7 +1,7 @@
 name = "QuantumStateBase"
 uuid = "73ce9c4f-35d1-4161-b9e6-26915895bfed"
 authors = ["JingYu Ning <foldfelis@gmail.com> and contributors"]
-version = "1.0.0"
+version = "1.0.1"
 
 [deps]
 ClassicalOrthogonalPolynomials = "b30e2e7b-c4ee-47da-9d5f-2c5c27239acd"
@@ -12,8 +12,8 @@ Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [compat]
 ClassicalOrthogonalPolynomials = "0.4"
-KernelDensity = "0.6"
 DataDeps = "0.7"
+KernelDensity = "0.6"
 julia = "1.6"
 
 [extras]
