@@ -29,6 +29,27 @@ function Base.show(io::IO, state::StateVector{T}) where {T}
     print(io, "\n])")
 end
 
+function Base.:+(s1::StateVector, s2::StateVector)
+    if s1.dim ≥ s2.dim
+        new_state = copy(s1)
+        new_state.v[1:length(s2.v)] .+= s2.v
+    else
+        new_state = copy(s2)
+        new_state.v[1:length(s1.v)] .+= s1.v
+    end
+
+    return new_state
+end
+
+function Base.:*(c::Number, s::StateVector)
+    new_state = copy(s)
+    new_state.v .*= c
+
+    return new_state
+end
+
+Base.:*(s::StateVector, c::Number) = c * s
+
 """
     Base.vec(state::StateVector{<:Number})
 
@@ -123,6 +144,27 @@ function Base.show(io::IO, state::StateMatrix{T}) where {T}
     Base.print_matrix(IOContext(io, :limit=>true), state.𝛒)
     print(io, "\n])")
 end
+
+function Base.:+(s1::StateMatrix, s2::StateMatrix)
+    if s1.dim ≥ s2.dim
+        new_state = copy(s1)
+        new_state.𝛒[1:size(s2.𝛒, 1), 1:size(s2.𝛒, 2)] .+= s2.𝛒
+    else
+        new_state = copy(s2)
+        new_state.𝛒[1:size(s1.𝛒, 1), 1:size(s1.𝛒, 2)] .+= s1.𝛒
+    end
+
+    return new_state
+end
+
+function Base.:*(c::Number, s::StateMatrix)
+    new_state = copy(s)
+    new_state.𝛒 .*= c
+
+    return new_state
+end
+
+Base.:*(s::StateMatrix, c::Number) = c * s
 
 """
     StateMatrix(state::StateVector{<:Number})
