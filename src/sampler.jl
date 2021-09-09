@@ -42,7 +42,7 @@ function gaussian_state_sampler!(
     # xs
     points[2, :] .= real(μ) + σ .* randn(n)
 
-    return points
+    return points, real(μ), σ
 end
 
 function gaussian_state_sampler!(
