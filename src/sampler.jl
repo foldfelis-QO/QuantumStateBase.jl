@@ -23,7 +23,7 @@ Random points sampled from quadrature probability density function of Gaussian `
 function gaussian_state_sampler(state::AbstractState, n::Integer; θ_offset=0.)
     points = Matrix{Float64}(undef, 2, n)
 
-    return gaussian_state_sampler!(points, state, θ_offset)
+    return gaussian_state_sampler!(points, state, θ_offset)[1]
 end
 
 function gaussian_state_sampler!(
