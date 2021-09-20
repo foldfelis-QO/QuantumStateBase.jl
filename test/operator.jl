@@ -54,29 +54,22 @@ end
     )'
 end
 
-# @testset "measurement" begin
-#     @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:(QSB.DIM-1)]
-#     @test QSB.coeff_ψₙ(1001) == QSB.calc_coeff_ψₙ(big(1001))
+@testset "measurement" begin
+    ψₙs = QSB.ψₙ.(big(0):big(DIM-1), 2., 3.)
+    @test QSB.𝛑̂(2, 3, dim=DIM) ≈ ψₙs * ψₙs'
+end
 
-#     # try to extand coeff of ψₙ
-#     QSB.extend_coeff_ψₙ!(80)
-#     @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:80]
+@testset "Gaussian state" begin
+    𝐚 = rand(10, 10)
+    𝐛 = rand(10, 10)
 
-#     ψₙs = QSB.ψₙ.(0:QSB.DIM-1, 2., 3.)
-#     @test QSB.𝛑̂(2, 3) ≈ ψₙs * ψₙs'
-# end
+    @test QSB.tr_mul(𝐚, 𝐛) ≈ tr(𝐚 * 𝐛)
 
-# @testset "Gaussian state" begin
-#     𝐚 = rand(10, 10)
-#     𝐛 = rand(10, 10)
+    state = SqueezedThermalState(ξ(1., π/4), 0.5)
 
-#     @test QSB.tr_mul(𝐚, 𝐛) ≈ tr(𝐚 * 𝐛)
-
-#     state = SqueezedThermalState(ξ(1., π/4), 0.5)
-
-#     @test QSB.create_μ(state) ≈ tr(Creation(dim=state.dim) * state.𝛒)
-#     @test QSB.create²_μ(state) ≈ tr(Creation(dim=state.dim)^2 * state.𝛒)
-#     @test QSB.annihilate_μ(state) ≈ tr(Annihilation(dim=state.dim) * state.𝛒)
-#     @test QSB.annihilate²_μ(state) ≈ tr(Annihilation(dim=state.dim)^2 * state.𝛒)
-#     @test QSB.create_annihilate_μ(state) ≈ tr(Creation(dim=state.dim) * Annihilation(dim=state.dim) * state.𝛒)
-# end
+    @test QSB.create_μ(state) ≈ tr(Creation(dim=state.dim) * state.𝛒)
+    @test QSB.create²_μ(state) ≈ tr(Creation(dim=state.dim)^2 * state.𝛒)
+    @test QSB.annihilate_μ(state) ≈ tr(Annihilation(dim=state.dim) * state.𝛒)
+    @test QSB.annihilate²_μ(state) ≈ tr(Annihilation(dim=state.dim)^2 * state.𝛒)
+    @test QSB.create_annihilate_μ(state) ≈ tr(Creation(dim=state.dim) * Annihilation(dim=state.dim) * state.𝛒)
+end

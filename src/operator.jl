@@ -283,79 +283,63 @@ function squeeze!(state::StateMatrix{T}, ξ::ComplexVec) where {T}
     return state
 end
 
-# ###############
-# # measurement #
-# ###############
+###############
+# measurement #
+###############
 
-# # ##### for arb. statein θ-x quadrature coordinate #####
+##### for arb. statein θ-x quadrature coordinate #####
 
-# # |θ, x⟩ = ∑ₙ |n⟩ ⟨n|θ, x⟩ = ∑ₙ ψₙ(θ, x) |n⟩
-# # ⟨n|θ, x⟩ = ψₙ(θ, x) = exp(im n θ) (2/π)^(1/4) exp(-x^2) Hₙ(√2 x)/√(2^n n!)
-# # coeff_ψₙ = (2/π)^(1/4)/√(2^n n!)
-# # ψₙ = coeff_ψₙ(n) exp(im n θ) exp(-x^2) Hₙ(√2 x)
-# calc_coeff_ψₙ(n::BigInt) = (2/π)^(1/4) / sqrt(2^n * factorial(n))
-# COEFF_ψₙ = [calc_coeff_ψₙ(big(n)) for n in 0:(DIM-1)]
+# |θ, x⟩ = ∑ₙ |n⟩ ⟨n|θ, x⟩ = ∑ₙ ψₙ(θ, x) |n⟩
+# ⟨n|θ, x⟩ = ψₙ(θ, x) = exp(im n θ) (2/π)^(1/4) exp(-x^2) Hₙ(√2 x)/√(2^n n!)
+function ψₙ(n::Integer, θ::Real, x::Real)
+    return (2/π)^(1/4) * exp(im*n*θ - x^2) * hermiteh(n, sqrt(2)x) / sqrt(2^n * factorial(n))
+end
 
-# function extend_coeff_ψₙ!(n::Integer)
-#     while length(COEFF_ψₙ)-1 < n
-#         push!(COEFF_ψₙ, calc_coeff_ψₙ(big(length(COEFF_ψₙ))))
-#     end
-# end
+function 𝛑̂!(result::Matrix{<:Complex}, θ::Real, x::Real; dim=DIM)
+    view(result, :, 1) .= ψₙ.(big(0):big(dim-1), θ, x)
+    result .= view(result, :, 1) * view(result, :, 1)'
 
-# function coeff_ψₙ(n::Integer)
-#     (n < length(COEFF_ψₙ)) && (return COEFF_ψₙ[n+1])
+    return result
+end
 
-#     return calc_coeff_ψₙ(big(n))
-# end
+function 𝛑̂(T::Type{<:Complex}, θ::Real, x::Real; dim=DIM)
+    result = Matrix{T}(undef, dim, dim)
 
-# function ψₙ(n::Integer, θ::Real, x::Real)
-#     return coeff_ψₙ(n) * exp(im * n * θ - x^2) * hermiteh(n, sqrt(2)x)
-# end
+    return 𝛑̂!(result, θ, x, dim=dim)
+end
 
-# function 𝛑̂!(result::Matrix{<:Complex}, θ::Real, x::Real; dim=DIM)
-#     view(result, :, 1) .= ψₙ.(0:dim-1, θ, x)
-#     result .= view(result, :, 1) * view(result, :, 1)'
+𝛑̂(θ::Real, x::Real; dim=DIM) = 𝛑̂(ComplexF64, θ, x, dim=dim)
 
-#     return result
-# end
+##### for Gaussian state in θ-x quadrature coordinate #####
 
-# function 𝛑̂(θ::Real, x::Real; dim=DIM, T=ComplexF64)
-#     result = Matrix{T}(undef, dim, dim)
-#     U = T.parameters[1]
+# π̂ₓ = (â exp(-im θ) + â† exp(im θ)) / 2
 
-#     return 𝛑̂!(result, U(θ), U(x), dim=dim)
-# end
+tr_mul(𝐚, 𝐛) = sum(𝐚[i, :]' * 𝐛[:, i] for i in 1:size(𝐚, 1))
+create_μ(state::StateMatrix{T}) where {T} = tr_mul(Creation(T, dim=state.dim), state.𝛒)
+create²_μ(state::StateMatrix{T}) where {T} = tr_mul(Creation(T, dim=state.dim)^2, state.𝛒)
+annihilate_μ(state::StateMatrix{T}) where {T} = tr_mul(Annihilation(T, dim=state.dim), state.𝛒)
+annihilate²_μ(state::StateMatrix{T}) where {T} = tr_mul(Annihilation(T, dim=state.dim)^2, state.𝛒)
+create_annihilate_μ(state::StateMatrix{T}) where {T} = tr_mul(
+    Creation(T, dim=state.dim) * Annihilation(T, dim=state.dim),
+    state.𝛒
+)
 
-# # ##### for Gaussian state in θ-x quadrature coordinate #####
+# ⟨π̂ₓ²⟩ = ⟨ââ exp(-2im θ) + â†â† exp(2im θ) + ââ† + â†â⟩ / 4
+# ⟨π̂ₓ²⟩ = (exp(-2im θ)⟨â²⟩ + exp(2im θ)⟨â†²⟩ + 1 + 2⟨ââ†⟩) / 4
+# here, ⟨ââ† + â†â⟩ = 1 + 2⟨ââ†⟩ due to the commutation relation
+function π̂ₓ²_μ(θs::AbstractVector{<:Number}, state::StateMatrix)
+    return (
+        exp.(-2im*θs) .* annihilate²_μ(state) .+
+        exp.(2im*θs) .* create²_μ(state) .+
+        1 .+ 2create_annihilate_μ(state)
+    ) ./ 4
+end
 
-# # π̂ₓ = (â exp(-im θ) + â† exp(im θ)) / 2
-
-# tr_mul(𝐚, 𝐛) = sum(𝐚[i, :]' * 𝐛[:, i] for i in 1:size(𝐚, 1))
-# create_μ(state::StateMatrix) = tr_mul(Creation(dim=state.dim), state.𝛒)
-# create²_μ(state::StateMatrix) = tr_mul(Creation(dim=state.dim)^2, state.𝛒)
-# annihilate_μ(state::StateMatrix) = tr_mul(Annihilation(dim=state.dim), state.𝛒)
-# annihilate²_μ(state::StateMatrix) = tr_mul(Annihilation(dim=state.dim)^2, state.𝛒)
-# create_annihilate_μ(state::StateMatrix) = tr_mul(
-#     Creation(dim=state.dim) * Annihilation(dim=state.dim),
-#     state.𝛒
-# )
-
-# # ⟨π̂ₓ²⟩ = ⟨ââ exp(-2im θ) + â†â† exp(2im θ) + ââ† + â†â⟩ / 4
-# # ⟨π̂ₓ²⟩ = (exp(-2im θ)⟨â²⟩ + exp(2im θ)⟨â†²⟩ + 1 + 2⟨ââ†⟩) / 4
-# # here, ⟨ââ† + â†â⟩ = 1 + 2⟨ââ†⟩ due to the commutation relation
-# function π̂ₓ²_μ(θs::AbstractVector{<:Number}, state::StateMatrix)
-#     return (
-#         exp.(-2im*θs) .* annihilate²_μ(state) .+
-#         exp.(2im*θs) .* create²_μ(state) .+
-#         1 .+ 2create_annihilate_μ(state)
-#     ) ./ 4
-# end
-
-# # ⟨π̂ₓ⟩ = ⟨â exp(-im θ) + â† exp(im θ)⟩ / 2
-# # ⟨π̂ₓ⟩ = (exp(-im θ)⟨â⟩ + exp(im θ)⟨â†⟩) / 2
-# function π̂ₓ_μ(θs::AbstractVector{<:Number}, state::StateMatrix)
-#     return (
-#         exp.(-im*θs) .* annihilate_μ(state) .+
-#         exp.(im*θs) .* create_μ(state)
-#     ) ./ 2
-# end
+# ⟨π̂ₓ⟩ = ⟨â exp(-im θ) + â† exp(im θ)⟩ / 2
+# ⟨π̂ₓ⟩ = (exp(-im θ)⟨â⟩ + exp(im θ)⟨â†⟩) / 2
+function π̂ₓ_μ(θs::AbstractVector{<:Number}, state::StateMatrix)
+    return (
+        exp.(-im*θs) .* annihilate_μ(state) .+
+        exp.(im*θs) .* create_μ(state)
+    ) ./ 2
+end
