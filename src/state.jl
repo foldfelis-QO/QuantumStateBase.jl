@@ -21,7 +21,7 @@ Coherent state is defined as the eigenstate of annihilation operator.
 
 This constructor will construct ``| \\alpha \\rangle = \\hat{D}(\\alpha) | 0 \\rangle``
 """
-function CoherentState(T, α::ComplexVec; dim=DIM, rep=StateVector)
+function CoherentState(T::Type{<:Number}, α::ComplexVec; dim=DIM, rep=StateVector)
     return displace!(VacuumState(T, dim=dim, rep=rep), α)
 end
 
@@ -39,7 +39,7 @@ has a quantum uncertainty smaller than that of a coherent state.
 
 This constructor will construct ``| \\xi \\rangle = \\hat{S}(\\xi) | 0 \\rangle``
 """
-function SqueezedState(T, ξ::ComplexVec; dim=DIM, rep=StateVector)
+function SqueezedState(T::Type{<:Number}, ξ::ComplexVec; dim=DIM, rep=StateVector)
     return squeeze!(VacuumState(T, dim=dim, rep=rep), ξ)
 end
 
@@ -61,8 +61,8 @@ Thermal state is a mixed state with photon number distribution described by Bose
 * `n̄`: Average photon number at temperature T.
 * `dim`: Maximum photon number for truncate, default is $DIM.
 """
-ThermalState(T, n̄::Real; dim=DIM) = StateMatrix(diagm(bose_einstein(n̄).(T.(0:dim-1))), dim)
-ThermalState(n̄::Real; dim=DIM) = ThermalState(Float64, n̄, dim=dim)
+ThermalState(T::Type{<:Number}, n̄::Real; dim=DIM) = StateMatrix(diagm(bose_einstein(n̄).(T.(0:dim-1))), dim)
+ThermalState(n̄::Real; dim=DIM) = ThermalState(ComplexF64, n̄, dim=dim)
 
 """
     SqueezedThermalState(ξ::ComplexVec{<:Real}, n̄::Real; dim=DIM)
@@ -76,6 +76,8 @@ has a quantum uncertainty smaller than that of a coherent state.
 
 This constructor will construct ``\\rho = \\hat{S}(\\xi) \\rho_{th} \\hat{S}(\\xi)^{T}``
 """
-function SqueezedThermalState(ξ::ComplexVec, n̄::Real; dim=DIM)
-    return squeeze!(ThermalState(ComplexF64, n̄, dim=dim), ξ)
+function SqueezedThermalState(T::Type{<:Number}, ξ::ComplexVec, n̄::Real; dim=DIM)
+    return squeeze!(ThermalState(T, n̄, dim=dim), ξ)
 end
+
+SqueezedThermalState(ξ::ComplexVec, n̄::Real; dim=DIM) = SqueezedThermalState(ComplexF64, ξ, n̄; dim=dim)

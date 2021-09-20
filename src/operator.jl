@@ -27,7 +27,7 @@ Creation operator in matrix representation
 
 ``\\hat{a}^{\\dagger}``
 """
-Creation(T; dim=DIM) = diagm(-1 => sqrt.(T.(1:dim-1)))
+Creation(T::Type{<:Number}; dim=DIM) = diagm(-1 => sqrt.(T.(1:dim-1)))
 Creation(; dim=DIM) = Creation(ComplexF64, dim=dim)
 
 """
@@ -87,7 +87,7 @@ Annihilation operator in matrix representation
 
 ``\\hat{a}``
 """
-Annihilation(T; dim=DIM) = diagm(1 => sqrt.(T.(1:dim-1)))
+Annihilation(T::Type{<:Number}; dim=DIM) = diagm(1 => sqrt.(T.(1:dim-1)))
 Annihilation(; dim=DIM) = Annihilation(ComplexF64, dim=dim)
 
 """
@@ -151,7 +151,7 @@ Vector in polar coordinate for complex plane.
 
 ``v = r e^{-i\\theta}``
 """
-struct ComplexVec{T <: Real}
+struct ComplexVec{T<:Real}
     r::T
     θ::T
 end
@@ -175,7 +175,7 @@ julia> α(1.5, π/4)
 ComplexVec{Float64}(1.5exp(-0.7853981633974483im))
 ```
 """
-α(T, r, θ) = ComplexVec{T}(T(r), T(θ))
+α(T::Type{<:Real}, r::Real, θ::Real) = ComplexVec{T}(T(r), T(θ))
 α(r, θ) = α(Float64, r, θ)
 
 """
@@ -200,7 +200,7 @@ Displacement operator in matrix representation
 
 ``\\hat{D}(\\alpha) = exp(\\alpha \\hat{a}^{\\dagger} - \\alpha^{*} \\hat{a})``
 """
-function Displacement(T, α::ComplexVec; dim=DIM)
+function Displacement(T::Type{<:Number}, α::ComplexVec; dim=DIM)
     return exp(z(α) * Creation(T, dim=dim) - z(α)' * Annihilation(T, dim=dim))
 end
 
@@ -247,7 +247,7 @@ Squeezing operator in matrix representation
 
 ``\\hat{S}(\\xi) = exp(\\frac{1}{2} (\\xi^{*} \\hat{a}^{2} - \\xi \\hat{a}^{\\dagger 2}))``
 """
-function Squeezing(T, ξ::ComplexVec; dim=DIM)
+function Squeezing(T::Type{<:Number}, ξ::ComplexVec; dim=DIM)
     return exp(0.5 * z(ξ)' * Annihilation(T, dim=dim)^2 - 0.5 * z(ξ) * Creation(T, dim=dim)^2)
 end
 

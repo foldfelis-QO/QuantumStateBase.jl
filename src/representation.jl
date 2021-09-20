@@ -18,7 +18,7 @@ abstract type AbstractState end
 Vector representation for pure quantum state.
 There are various constructures to construct different pure quantum states.
 """
-mutable struct StateVector{T <: Number} <: AbstractState
+mutable struct StateVector{T<:Number}<:AbstractState
     v::Vector{T}
     dim::Int64
 end
@@ -130,7 +130,7 @@ end
 Density Matrix representation for pure and mixed quantum state.
 There are various constructures to construct different pure and mixed quantum states.
 """
-mutable struct StateMatrix{T <: Number} <: AbstractState
+mutable struct StateMatrix{T<:Number}<:AbstractState
     𝛒::Matrix{T}
     dim::Int64
 end
@@ -170,7 +170,7 @@ julia> state = VacuumState();
 julia> StateMatrix(state);
 ```
 """
-function StateMatrix(state::StateVector{T}) where {T <: Number}
+function StateMatrix(state::StateVector{T}) where {T<:Number}
     𝛒 = state.v * state.v'
 
     return StateMatrix{T}(𝛒, state.dim)
