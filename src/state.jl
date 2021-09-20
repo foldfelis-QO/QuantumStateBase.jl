@@ -49,7 +49,7 @@ SqueezedState(ξ::ComplexVec; dim=DIM, rep=StateVector) = SqueezedState(ComplexF
 # mixed state #
 ###############
 
-bose_einstein(n::Integer, n̄::Real) = n̄^n / (1 + n̄)^(n+1)
+bose_einstein(n::Number, n̄::Real) = n̄^n / (1 + n̄)^(n+1)
 
 bose_einstein(n̄::Real) = n -> bose_einstein(n, n̄)
 
@@ -61,7 +61,8 @@ Thermal state is a mixed state with photon number distribution described by Bose
 * `n̄`: Average photon number at temperature T.
 * `dim`: Maximum photon number for truncate, default is $DIM.
 """
-ThermalState(n̄::Real; dim=DIM) = StateMatrix(diagm(ComplexF64.(bose_einstein(n̄).(0:dim-1))), dim)
+ThermalState(T, n̄::Real; dim=DIM) = StateMatrix(diagm(bose_einstein(n̄).(T.(0:dim-1))), dim)
+ThermalState(n̄::Real; dim=DIM) = ThermalState(Float64, n̄, dim=dim)
 
 """
     SqueezedThermalState(ξ::ComplexVec{<:Real}, n̄::Real; dim=DIM)
@@ -75,6 +76,6 @@ has a quantum uncertainty smaller than that of a coherent state.
 
 This constructor will construct ``\\rho = \\hat{S}(\\xi) \\rho_{th} \\hat{S}(\\xi)^{T}``
 """
-function SqueezedThermalState(ξ::ComplexVec{<:Real}, n̄::Real; dim=DIM)
-    return squeeze!(ThermalState(n̄, dim=dim), ξ)
+function SqueezedThermalState(ξ::ComplexVec, n̄::Real; dim=DIM)
+    return squeeze!(ThermalState(ComplexF64, n̄, dim=dim), ξ)
 end

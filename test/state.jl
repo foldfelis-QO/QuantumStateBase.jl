@@ -19,5 +19,5 @@ end
     @test ThermalState(n̄, dim=dim) ==
         StateMatrix(diagm(QSB.bose_einstein(n̄).(0:dim-1)), dim)
     @test SqueezedThermalState(ξ(1., π/4), n̄, dim=dim) ==
-        squeeze!(ThermalState(n̄, dim=dim), ξ(1., π/4))
+        squeeze!(ThermalState(ComplexF64, n̄, dim=dim), ξ(1., π/4))
 end
