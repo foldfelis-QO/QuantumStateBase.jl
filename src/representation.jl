@@ -30,13 +30,9 @@ function Base.show(io::IO, state::StateVector{T}) where {T}
 end
 
 function Base.:+(s1::StateVector, s2::StateVector)
-    if s1.dim ≥ s2.dim
-        new_state = copy(s1)
-        new_state.v[1:length(s2.v)] .+= s2.v
-    else
-        new_state = copy(s2)
-        new_state.v[1:length(s1.v)] .+= s1.v
-    end
+    s1, s2 = (s1.dim ≥ s2.dim) ? (s1, s2) : (s2, s1)
+    new_state = copy(s1)
+    new_state.v[1:length(s2.v)] .+= s2.v
 
     return new_state
 end
@@ -60,7 +56,7 @@ To get the vector of a pure quantum state.
 julia> state = FockState(1);
 
 julia> vec(state)
-70-element Vector{ComplexF64}:
+$DIM-element Vector{ComplexF64}:
  0.0 + 0.0im
  1.0 + 0.0im
      ⋮
@@ -79,7 +75,7 @@ To get the density matrix of a pure quantum state.
 julia> state = FockState(1);
 
 julia> 𝛒(state)
-70×70 Matrix{ComplexF64}:
+$DIM×$DIM Matrix{ComplexF64}:
  0.0+0.0im  0.0+0.0im  0.0+0.0im  …  0.0+0.0im  0.0+0.0im  0.0+0.0im
  0.0+0.0im  1.0+0.0im  0.0+0.0im     0.0+0.0im  0.0+0.0im  0.0+0.0im
     ⋮                             ⋱
@@ -146,13 +142,9 @@ function Base.show(io::IO, state::StateMatrix{T}) where {T}
 end
 
 function Base.:+(s1::StateMatrix, s2::StateMatrix)
-    if s1.dim ≥ s2.dim
-        new_state = copy(s1)
-        new_state.𝛒[1:size(s2.𝛒, 1), 1:size(s2.𝛒, 2)] .+= s2.𝛒
-    else
-        new_state = copy(s2)
-        new_state.𝛒[1:size(s1.𝛒, 1), 1:size(s1.𝛒, 2)] .+= s1.𝛒
-    end
+    s1, s2 = (s1.dim ≥ s2.dim) ? (s1, s2) : (s2, s1)
+    new_state = copy(s1)
+    new_state.𝛒[1:size(s2.𝛒, 1), 1:size(s2.𝛒, 2)] .+= s2.𝛒
 
     return new_state
 end
@@ -194,7 +186,7 @@ To get the density matrix of a pure quantum state.
 julia> state = FockState(1);
 
 julia> 𝛒(state)
-70×70 Matrix{ComplexF64}:
+$DIM×$DIM Matrix{ComplexF64}:
  0.0+0.0im  0.0+0.0im  0.0+0.0im  …  0.0+0.0im  0.0+0.0im  0.0+0.0im
  0.0+0.0im  1.0+0.0im  0.0+0.0im     0.0+0.0im  0.0+0.0im  0.0+0.0im
     ⋮                             ⋱
