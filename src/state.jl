@@ -21,9 +21,11 @@ Coherent state is defined as the eigenstate of annihilation operator.
 
 This constructor will construct ``| \\alpha \\rangle = \\hat{D}(\\alpha) | 0 \\rangle``
 """
-function CoherentState(α::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
-    return displace!(VacuumState(dim=dim, rep=rep), α)
+function CoherentState(T, α::ComplexVec; dim=DIM, rep=StateVector)
+    return displace!(VacuumState(T, dim=dim, rep=rep), α)
 end
+
+CoherentState(α::ComplexVec; dim=DIM, rep=StateVector) = CoherentState(ComplexF64, α, dim=dim, rep=rep)
 
 """
     SqueezedState(ξ::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
@@ -37,9 +39,11 @@ has a quantum uncertainty smaller than that of a coherent state.
 
 This constructor will construct ``| \\xi \\rangle = \\hat{S}(\\xi) | 0 \\rangle``
 """
-function SqueezedState(ξ::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
-    return squeeze!(VacuumState(dim=dim, rep=rep), ξ)
+function SqueezedState(T, ξ::ComplexVec; dim=DIM, rep=StateVector)
+    return squeeze!(VacuumState(T, dim=dim, rep=rep), ξ)
 end
+
+SqueezedState(ξ::ComplexVec; dim=DIM, rep=StateVector) = SqueezedState(ComplexF64, ξ, dim=dim, rep=rep)
 
 ###############
 # mixed state #

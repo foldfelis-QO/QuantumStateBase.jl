@@ -1,5 +1,5 @@
 @testset "pure state" begin
-    dim = 70
+    dim = DIM
 
     @test CoherentState(α(2., π/4), dim=dim) == displace!(VacuumState(dim=dim), α(2., π/4))
     @test CoherentState(α(2., π/4), dim=dim, rep=StateMatrix) ==
@@ -10,7 +10,7 @@
 end
 
 @testset "mixed state" begin
-    dim = 70
+    dim = DIM
 
     n̄ = 0.5
     n = 5
