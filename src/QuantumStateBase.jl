@@ -23,7 +23,7 @@ module QuantumStateBase
     # state
     include("representation.jl")
     include("basis.jl")
-    # include("operator.jl")
+    include("operator.jl")
     # include("state.jl")
 
     # # wigner

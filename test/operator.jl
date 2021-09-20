@@ -1,5 +1,5 @@
 @testset "a† and a" begin
-    dim = 70
+    dim = DIM
 
     @test create!(VacuumState(dim=dim)) ≈ SinglePhotonState(dim=dim)
     @test annihilate!(SinglePhotonState(dim=dim)) ≈ VacuumState(dim=dim)
@@ -14,12 +14,12 @@ end
 
 @testset "α and ξ" begin
     @test repr(ComplexVec(2., π/4)) == "ComplexVec{Float64}(2.0exp(-$(π/4)im))"
-    @test QSB.z(α(2., π/4)) ≈ 2 * exp(-im * π/4)
-    @test QSB.z(ξ(2., π/4)) ≈ 2 * exp(-im * π/4)
+    @test QSB.z(α(2, π/4)) ≈ 2 * exp(-im * π/4)
+    @test QSB.z(ξ(2, π/4)) ≈ 2 * exp(-im * π/4)
 end
 
 @testset "Displacement" begin
-    dim = 70
+    dim = DIM
     r = 2.
     θ = π/4
 
@@ -37,7 +37,7 @@ end
 end
 
 @testset "squeezing" begin
-    dim = 70
+    dim = DIM
     r = 2.
     θ = π/4
 
@@ -54,29 +54,29 @@ end
     )'
 end
 
-@testset "measurement" begin
-    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:(QSB.DIM-1)]
-    @test QSB.coeff_ψₙ(1001) == QSB.calc_coeff_ψₙ(big(1001))
+# @testset "measurement" begin
+#     @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:(QSB.DIM-1)]
+#     @test QSB.coeff_ψₙ(1001) == QSB.calc_coeff_ψₙ(big(1001))
 
-    # try to extand coeff of ψₙ
-    QSB.extend_coeff_ψₙ!(80)
-    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:80]
+#     # try to extand coeff of ψₙ
+#     QSB.extend_coeff_ψₙ!(80)
+#     @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:80]
 
-    ψₙs = QSB.ψₙ.(0:QSB.DIM-1, 2., 3.)
-    @test QSB.𝛑̂(2, 3) ≈ ψₙs * ψₙs'
-end
+#     ψₙs = QSB.ψₙ.(0:QSB.DIM-1, 2., 3.)
+#     @test QSB.𝛑̂(2, 3) ≈ ψₙs * ψₙs'
+# end
 
-@testset "Gaussian state" begin
-    𝐚 = rand(10, 10)
-    𝐛 = rand(10, 10)
+# @testset "Gaussian state" begin
+#     𝐚 = rand(10, 10)
+#     𝐛 = rand(10, 10)
 
-    @test QSB.tr_mul(𝐚, 𝐛) ≈ tr(𝐚 * 𝐛)
+#     @test QSB.tr_mul(𝐚, 𝐛) ≈ tr(𝐚 * 𝐛)
 
-    state = SqueezedThermalState(ξ(1., π/4), 0.5)
+#     state = SqueezedThermalState(ξ(1., π/4), 0.5)
 
-    @test QSB.create_μ(state) ≈ tr(Creation(dim=state.dim) * state.𝛒)
-    @test QSB.create²_μ(state) ≈ tr(Creation(dim=state.dim)^2 * state.𝛒)
-    @test QSB.annihilate_μ(state) ≈ tr(Annihilation(dim=state.dim) * state.𝛒)
-    @test QSB.annihilate²_μ(state) ≈ tr(Annihilation(dim=state.dim)^2 * state.𝛒)
-    @test QSB.create_annihilate_μ(state) ≈ tr(Creation(dim=state.dim) * Annihilation(dim=state.dim) * state.𝛒)
-end
+#     @test QSB.create_μ(state) ≈ tr(Creation(dim=state.dim) * state.𝛒)
+#     @test QSB.create²_μ(state) ≈ tr(Creation(dim=state.dim)^2 * state.𝛒)
+#     @test QSB.annihilate_μ(state) ≈ tr(Annihilation(dim=state.dim) * state.𝛒)
+#     @test QSB.annihilate²_μ(state) ≈ tr(Annihilation(dim=state.dim)^2 * state.𝛒)
+#     @test QSB.create_annihilate_μ(state) ≈ tr(Creation(dim=state.dim) * Annihilation(dim=state.dim) * state.𝛒)
+# end

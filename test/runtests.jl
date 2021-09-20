@@ -18,7 +18,7 @@ Base.:(≈)(s1::StateMatrix, s2::StateMatrix) = (s1.𝛒 ≈ s2.𝛒) && (s1.dim
     # state
     include("representation.jl")
     include("basis.jl")
-    # include("operator.jl")
+    include("operator.jl")
     # include("state.jl")
 
     # # wigner
