@@ -20,7 +20,7 @@ Random points sampled from quadrature probability density function of Gaussian `
 * `n`: N points.
 * `θ_offset`: The offset of the θ coordinate
 """
-function gaussian_state_sampler(T::Type{<:Real}, state::AbstractState, n::Integer; θ_offset=0.)
+function gaussian_state_sampler(T::Type{<:Real}, state::AbstractState, n::Integer; θ_offset=zero(T))
     points = Matrix{T}(undef, 2, n)
 
     return gaussian_state_sampler!(points, state, θ_offset)[1]
