@@ -37,14 +37,16 @@ julia> state = FockState(1, dim=100);
 julia> state = FockState(1, rep=StateMatrix);
 ```
 """
-FockState(n; T=ComplexF64, dim=DIM, rep=StateVector) = FockState(T, n, dim, rep)
+FockState(T::Type{<:Number}, n; dim=DIM, rep=StateVector) = FockState(T, n, dim, rep)
+FockState(n; dim=DIM, rep=StateVector) = FockState(ComplexF64, n, dim, rep)
 
 """
     NumberState(n; T=ComplexF64, dim=DIM, rep=StateVector)
 
 Exactly the same with `FockState`.
 """
-NumberState(n; T=ComplexF64, dim=DIM, rep=StateVector) = FockState(T, n, dim, rep)
+NumberState(T::Type{<:Number}, n; dim=DIM, rep=StateVector) = FockState(T, n, dim, rep)
+NumberState(n; dim=DIM, rep=StateVector) = FockState(ComplexF64, n, dim, rep)
 
 """
     VacuumState(; T=ComplexF64, dim=DIM, rep=StateVector)
@@ -64,7 +66,8 @@ julia> state = VacuumState(dim=100);
 julia> state = VacuumState(rep=StateMatrix);
 ```
 """
-VacuumState(; T=ComplexF64, dim=DIM, rep=StateVector) = FockState(T, 0, dim, rep)
+VacuumState(T::Type{<:Number}; dim=DIM, rep=StateVector) = FockState(T, 0, dim, rep)
+VacuumState(; dim=DIM, rep=StateVector) = FockState(ComplexF64, 0, dim, rep)
 
 """
     SinglePhotonState(; T=ComplexF64, dim=DIM, rep=StateVector)
@@ -84,4 +87,5 @@ julia> state = SinglePhotonState(dim=100);
 julia> state = SinglePhotonState(rep=StateMatrix);
 ```
 """
-SinglePhotonState(; T=ComplexF64, dim=DIM, rep=StateVector) = FockState(T, 1, dim, rep)
+SinglePhotonState(T::Type{<:Number}; dim=DIM, rep=StateVector) = FockState(T, 1, dim, rep)
+SinglePhotonState(; dim=DIM, rep=StateVector) = FockState(ComplexF64, 1, dim, rep)

@@ -21,9 +21,11 @@ Coherent state is defined as the eigenstate of annihilation operator.
 
 This constructor will construct ``| \\alpha \\rangle = \\hat{D}(\\alpha) | 0 \\rangle``
 """
-function CoherentState(α::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
-    return displace!(VacuumState(dim=dim, rep=rep), α)
+function CoherentState(T::Type{<:Number}, α::ComplexVec; dim=DIM, rep=StateVector)
+    return displace!(VacuumState(T, dim=dim, rep=rep), α)
 end
+
+CoherentState(α::ComplexVec; dim=DIM, rep=StateVector) = CoherentState(ComplexF64, α, dim=dim, rep=rep)
 
 """
     SqueezedState(ξ::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
@@ -37,15 +39,17 @@ has a quantum uncertainty smaller than that of a coherent state.
 
 This constructor will construct ``| \\xi \\rangle = \\hat{S}(\\xi) | 0 \\rangle``
 """
-function SqueezedState(ξ::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
-    return squeeze!(VacuumState(dim=dim, rep=rep), ξ)
+function SqueezedState(T::Type{<:Number}, ξ::ComplexVec; dim=DIM, rep=StateVector)
+    return squeeze!(VacuumState(T, dim=dim, rep=rep), ξ)
 end
+
+SqueezedState(ξ::ComplexVec; dim=DIM, rep=StateVector) = SqueezedState(ComplexF64, ξ, dim=dim, rep=rep)
 
 ###############
 # mixed state #
 ###############
 
-bose_einstein(n::Integer, n̄::Real) = n̄^n / (1 + n̄)^(n+1)
+bose_einstein(n::Number, n̄::Real) = n̄^n / (1 + n̄)^(n+1)
 
 bose_einstein(n̄::Real) = n -> bose_einstein(n, n̄)
 
@@ -57,7 +61,8 @@ Thermal state is a mixed state with photon number distribution described by Bose
 * `n̄`: Average photon number at temperature T.
 * `dim`: Maximum photon number for truncate, default is $DIM.
 """
-ThermalState(n̄::Real; dim=DIM) = StateMatrix(diagm(ComplexF64.(bose_einstein(n̄).(0:dim-1))), dim)
+ThermalState(T::Type{<:Number}, n̄::Real; dim=DIM) = StateMatrix(diagm(bose_einstein(n̄).(T.(0:dim-1))), dim)
+ThermalState(n̄::Real; dim=DIM) = ThermalState(ComplexF64, n̄, dim=dim)
 
 """
     SqueezedThermalState(ξ::ComplexVec{<:Real}, n̄::Real; dim=DIM)
@@ -71,6 +76,8 @@ has a quantum uncertainty smaller than that of a coherent state.
 
 This constructor will construct ``\\rho = \\hat{S}(\\xi) \\rho_{th} \\hat{S}(\\xi)^{T}``
 """
-function SqueezedThermalState(ξ::ComplexVec{<:Real}, n̄::Real; dim=DIM)
-    return squeeze!(ThermalState(n̄, dim=dim), ξ)
+function SqueezedThermalState(T::Type{<:Number}, ξ::ComplexVec, n̄::Real; dim=DIM)
+    return squeeze!(ThermalState(T, n̄, dim=dim), ξ)
 end
+
+SqueezedThermalState(ξ::ComplexVec, n̄::Real; dim=DIM) = SqueezedThermalState(ComplexF64, ξ, n̄; dim=dim)

@@ -3,7 +3,7 @@ module QuantumStateBase
     using LinearAlgebra
     using ClassicalOrthogonalPolynomials
 
-    const DIM = 70
+    const DIM = 100
 
     function __init__()
         register(DataDep(
@@ -26,7 +26,7 @@ module QuantumStateBase
     include("operator.jl")
     include("state.jl")
 
-    # wigner
+    # # wigner
     include("wigner_util.jl")
     include("wigner.jl")
 

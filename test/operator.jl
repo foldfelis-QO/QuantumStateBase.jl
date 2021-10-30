@@ -1,5 +1,5 @@
 @testset "a† and a" begin
-    dim = 70
+    dim = DIM
 
     @test create!(VacuumState(dim=dim)) ≈ SinglePhotonState(dim=dim)
     @test annihilate!(SinglePhotonState(dim=dim)) ≈ VacuumState(dim=dim)
@@ -14,12 +14,12 @@ end
 
 @testset "α and ξ" begin
     @test repr(ComplexVec(2., π/4)) == "ComplexVec{Float64}(2.0exp(-$(π/4)im))"
-    @test QSB.z(α(2., π/4)) ≈ 2 * exp(-im * π/4)
-    @test QSB.z(ξ(2., π/4)) ≈ 2 * exp(-im * π/4)
+    @test QSB.z(α(2, π/4)) ≈ 2 * exp(-im * π/4)
+    @test QSB.z(ξ(2, π/4)) ≈ 2 * exp(-im * π/4)
 end
 
 @testset "Displacement" begin
-    dim = 70
+    dim = DIM
     r = 2.
     θ = π/4
 
@@ -37,7 +37,7 @@ end
 end
 
 @testset "squeezing" begin
-    dim = 70
+    dim = DIM
     r = 2.
     θ = π/4
 
@@ -55,15 +55,8 @@ end
 end
 
 @testset "measurement" begin
-    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:(QSB.DIM-1)]
-    @test QSB.coeff_ψₙ(1001) == QSB.calc_coeff_ψₙ(big(1001))
-
-    # try to extand coeff of ψₙ
-    QSB.extend_coeff_ψₙ!(80)
-    @test QSB.COEFF_ψₙ == [QSB.calc_coeff_ψₙ(big(n)) for n in 0:80]
-
-    ψₙs = QSB.ψₙ.(0:QSB.DIM-1, 2., 3.)
-    @test QSB.𝛑̂(2, 3) ≈ ψₙs * ψₙs'
+    ψₙs = QSB.ψₙ.(big(0):big(DIM-1), 2., 3.)
+    @test QSB.𝛑̂(2, 3, dim=DIM) ≈ ψₙs * ψₙs'
 end
 
 @testset "Gaussian state" begin

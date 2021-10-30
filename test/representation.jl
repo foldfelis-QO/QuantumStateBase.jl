@@ -1,5 +1,5 @@
 @testset "StateVector" begin
-    dim = 70
+    dim = DIM
     T = ComplexF64
 
     vacuum_state_v = zeros(T, dim)
@@ -31,7 +31,7 @@
 end
 
 @testset "StateMatrix" begin
-    dim = 70
+    dim = DIM
     T = ComplexF64
 
     vacuum_state_𝛒 = zeros(T, dim, dim)
