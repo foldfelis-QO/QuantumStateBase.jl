@@ -27,8 +27,8 @@ module QuantumStateBase
     include("state.jl")
 
     # # wigner
-    # include("wigner_util.jl")
-    # include("wigner.jl")
+    include("wigner_util.jl")
+    include("wigner.jl")
 
     # pdf of quadrature
     include("quadrature_pdf.jl")
