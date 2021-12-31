@@ -283,11 +283,11 @@ function squeeze!(state::StateMatrix{T}, ξ::ComplexVec) where {T}
     return state
 end
 
-###############
-# measurement #
-###############
+###################
+# BHD measurement #
+###################
 
-##### for arb. statein θ-x quadrature coordinate #####
+##### for arb. state in intensity-to-measurement-phase quadrature coordinate #####
 
 # |θ, x⟩ = ∑ₙ |n⟩ ⟨n|θ, x⟩ = ∑ₙ ψₙ(θ, x) |n⟩
 # ⟨n|θ, x⟩ = ψₙ(θ, x) = exp(im n θ) (2/π)^(1/4) exp(-x^2) Hₙ(√2 x)/√(2^n n!)
@@ -310,7 +310,7 @@ end
 
 𝛑̂(θ::Real, x::Real; dim=DIM) = 𝛑̂(ComplexF64, θ, x, dim=dim)
 
-##### for Gaussian state in θ-x quadrature coordinate #####
+##### for Gaussian state in intensity-to-measurement-phase quadrature coordinate #####
 
 # π̂ₓ = (â exp(-im θ) + â† exp(im θ)) / 2
 
