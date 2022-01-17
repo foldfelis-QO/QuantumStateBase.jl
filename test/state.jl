@@ -72,4 +72,11 @@ end
 end
 
 @testset "mixed state" begin
+    ρ = view(Diagonal(QSB.bose_einstein(0.3).(Float64.(0:∞))), 1:DIM, 1:DIM)
+    @test ThermalState(Float64, 0.3, DIM) == ρ
+    @test ThermalState(0.3, DIM) == ρ
+
+    ρ = squeeze(ThermalState(Float64, 0.3, DIM), 1, π/4)
+    @test SqueezedThermalState(ComplexF64, 1, π/4, 0.3, DIM) == ρ
+    @test SqueezedThermalState(1, π/4, 0.3, DIM) == ρ
 end

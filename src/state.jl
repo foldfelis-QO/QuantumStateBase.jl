@@ -87,7 +87,7 @@ function ThermalState(T::Type{<:Number}, n̄, dim=∞)
     return dim === ∞ ? ρ : view(ρ, 1:dim, 1:dim)
 end
 
-ThermalState(n̄; dim=∞) = ThermalState(ComplexF64, n̄, dim)
+ThermalState(n̄, dim=∞) = ThermalState(Float64, n̄, dim)
 
 ### squeezed thermal state
 
