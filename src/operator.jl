@@ -109,7 +109,7 @@ function squeeze(v::AbstractVector{T}, r, θ) where {T}
 end
 
 function squeeze(ρ::AbstractMatrix{T}, r, θ) where {T}
-    dim = size(s, 1)
+    dim = size(ρ, 1)
     s = Squeezing(complex(T), r, θ, dim)
 
     check_finite_size(s) && (return s * ρ * s')
