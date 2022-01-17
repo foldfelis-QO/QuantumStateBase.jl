@@ -5,16 +5,14 @@ version = "1.1.0"
 
 [deps]
 ClassicalOrthogonalPolynomials = "b30e2e7b-c4ee-47da-9d5f-2c5c27239acd"
-DataDeps = "124859b0-ceae-595e-8997-d05f6a7a8dfe"
-KernelDensity = "5ab0869b-81aa-558d-bb23-cbf5423bbe9b"
+InfiniteArrays = "4858937d-0d70-526a-a4dd-2d5cb5dd786c"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [compat]
 ClassicalOrthogonalPolynomials = "0.5"
-DataDeps = "0.7"
-KernelDensity = "0.6"
-julia = "1.6"
+InfiniteArrays = "0.12"
+julia = "1.7"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

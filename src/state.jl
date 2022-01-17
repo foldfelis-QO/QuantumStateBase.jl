@@ -1,83 +1,107 @@
 export
+    # Fock basis
+    FockState,
+    NumberState,
+    VacuumState,
+    SinglePhotonState,
+
+    # pure state
     CoherentState,
     SqueezedState,
+
+    # mixed state
     ThermalState,
     SqueezedThermalState
 
-##############
-# pure state #
-##############
+################
+# constructors #
+################
 
-"""
-    CoherentState(α::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
+##### Fock basis #####
 
-Coherent state is defined as the eigenstate of annihilation operator.
+function FockState(T::Type{<:Number}, n::Integer, ::Type{Vector}, dim=∞)
+    v = cache(T.(Zeros(∞)))
+    v[n+1] = one(T)
 
-* `α`: Eigenvalue of annihilation operator.
-* `dim`: Maximum photon number for truncate, default is $DIM.
-* `rep`: In which representation, default is `StateVector`.
-
-``\\hat{a} | \\alpha \\rangle = \\alpha | \\alpha \\rangle``
-
-This constructor will construct ``| \\alpha \\rangle = \\hat{D}(\\alpha) | 0 \\rangle``
-"""
-function CoherentState(T::Type{<:Number}, α::ComplexVec; dim=DIM, rep=StateVector)
-    return displace!(VacuumState(T, dim=dim, rep=rep), α)
+    return dim === ∞ ? v : view(v, 1:dim)
 end
 
-CoherentState(α::ComplexVec; dim=DIM, rep=StateVector) = CoherentState(ComplexF64, α, dim=dim, rep=rep)
+function FockState(T::Type{<:Number}, n::Integer, ::Type{Matrix}, dim=∞)
+    ρ = cache(T.(Zeros(∞, ∞)))
+    ρ[n+1, n+1] = one(T)
 
-"""
-    SqueezedState(ξ::ComplexVec{<:Real}; dim=DIM, rep=StateVector)
-
-Squeezed state is defined if its electric field strength for some phases
-has a quantum uncertainty smaller than that of a coherent state.
-
-* `ξ`: Squeezing factor
-* `dim`: Maximum photon number for truncate, default is $DIM.
-* `rep`: In which representation, default is `StateVector`.
-
-This constructor will construct ``| \\xi \\rangle = \\hat{S}(\\xi) | 0 \\rangle``
-"""
-function SqueezedState(T::Type{<:Number}, ξ::ComplexVec; dim=DIM, rep=StateVector)
-    return squeeze!(VacuumState(T, dim=dim, rep=rep), ξ)
+    return dim === ∞ ? ρ : view(ρ, 1:dim, 1:dim)
 end
 
-SqueezedState(ξ::ComplexVec; dim=DIM, rep=StateVector) = SqueezedState(ComplexF64, ξ, dim=dim, rep=rep)
+FockState(n, rep, dim=∞) = FockState(Float64, n, rep, dim)
 
-###############
-# mixed state #
-###############
+FockState(n, dim=∞) = FockState(n, Vector, dim)
+
+const NumberState = FockState
+
+VacuumState(T, rep, dim=∞) = FockState(T, 0, rep, dim)
+
+VacuumState(rep, dim=∞) = FockState(Float64, 0, rep, dim)
+
+VacuumState(dim=∞) = FockState(0, Vector, dim)
+
+SinglePhotonState(T, rep, dim=∞) = FockState(T, 1, rep, dim)
+
+SinglePhotonState(rep, dim=∞) = FockState(Float64, 1, rep, dim)
+
+SinglePhotonState(dim=∞) = FockState(1, Vector, dim)
+
+##### pure state #####
+
+### coherent state
+
+function CoherentState(T::Type{<:Complex}, r, θ, rep, dim)
+    return displace(VacuumState(real(T), rep, dim), r, θ)
+end
+
+CoherentState(r, θ, rep, dim) = CoherentState(ComplexF64, r, θ, rep, dim)
+
+CoherentState(r, θ, dim) = CoherentState(r, θ, Vector, dim)
+
+### squeezed state
+
+function SqueezedState(T::Type{<:Complex}, r, θ, rep, dim)
+    return squeeze(VacuumState(real(T), rep, dim), r, θ)
+end
+
+SqueezedState(r, θ, rep, dim) = SqueezedState(ComplexF64, r, θ, rep, dim)
+
+SqueezedState(r, θ, dim) = SqueezedState(r, θ, Vector, dim)
+
+##### mixed state #####
+
+### thermal state
 
 bose_einstein(n::Number, n̄::Real) = n̄^n / (1 + n̄)^(n+1)
 
-bose_einstein(n̄::Real) = n -> bose_einstein(n, n̄)
+bose_einstein(n̄) = n -> bose_einstein(n, n̄)
 
-"""
-    ThermalState(n̄::Real; dim=DIM)
+function ThermalState(T::Type{<:Number}, n̄, dim=∞)
+    ρ = Diagonal(bose_einstein(n̄).(T.(0:∞)))
 
-Thermal state is a mixed state with photon number distribution described by Bose-Einstein distribution.
-
-* `n̄`: Average photon number at temperature T.
-* `dim`: Maximum photon number for truncate, default is $DIM.
-"""
-ThermalState(T::Type{<:Number}, n̄::Real; dim=DIM) = StateMatrix(diagm(bose_einstein(n̄).(T.(0:dim-1))), dim)
-ThermalState(n̄::Real; dim=DIM) = ThermalState(ComplexF64, n̄, dim=dim)
-
-"""
-    SqueezedThermalState(ξ::ComplexVec{<:Real}, n̄::Real; dim=DIM)
-
-Squeezed state is defined if its electric field strength for some phases
-has a quantum uncertainty smaller than that of a coherent state.
-
-* `ξ`: Squeezing factor
-* `n̄`: Average photon number at temperature T.
-* `dim`: Maximum photon number for truncate, default is $DIM.
-
-This constructor will construct ``\\rho = \\hat{S}(\\xi) \\rho_{th} \\hat{S}(\\xi)^{T}``
-"""
-function SqueezedThermalState(T::Type{<:Number}, ξ::ComplexVec, n̄::Real; dim=DIM)
-    return squeeze!(ThermalState(T, n̄, dim=dim), ξ)
+    return dim === ∞ ? ρ : view(ρ, 1:dim, 1:dim)
 end
 
-SqueezedThermalState(ξ::ComplexVec, n̄::Real; dim=DIM) = SqueezedThermalState(ComplexF64, ξ, n̄; dim=dim)
+ThermalState(n̄; dim=∞) = ThermalState(ComplexF64, n̄, dim)
+
+### squeezed thermal state
+
+function SqueezedThermalState(T::Type{<:Complex}, r, θ, n̄, dim)
+    return squeeze(ThermalState(real(T), n̄, dim), r, θ)
+end
+
+SqueezedThermalState(r, θ, n̄, dim) = SqueezedThermalState(ComplexF64, r, θ, n̄, dim)
+
+###########
+# methods #
+###########
+
+# TODO: ρ(v)
+# TODO: purity(ρ)
+# TODO: fidelity(ρ1, ρ2)
+# TODO: fidelity(v1, v2) ???
