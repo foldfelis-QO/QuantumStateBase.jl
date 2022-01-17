@@ -98,7 +98,7 @@ function Squeezing(T::Type{<:Complex}, r::Real, θ::Real, dim)
     ξ = ComplexVec(U(r), U(θ))
 
     return exp(collect( # `collect` applied due to limitation of `exp(A::AbstractMatrix)`
-        0.5z(ξ)' * Annihilation(U, dim)^2 - 0.5z(ξ) * Creation(U, dim)^2
+        (z(ξ)' * Annihilation(U, dim)^2)/2 - (z(ξ) * Creation(U, dim)^2)/2
     ))
 end
 
