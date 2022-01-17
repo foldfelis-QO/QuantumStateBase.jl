@@ -11,17 +11,33 @@
 end
 
 @testset "a† and a" begin
-    v3 = zeros(5); v3[4] = 1
-    v4 = zeros(5); v4[5] = 1
-
+    v3 = zeros(Float64, 5); v3[4] = 1
+    v4 = zeros(Float64, 5); v4[5] = 1
     @test create(v3) ≈ √(3+1) * v4
     @test annihilate(v4) ≈ √4 * v3
+    @test eltype(create(v3)) === Float64
+    @test eltype(annihilate(v4)) === Float64
 
-    ρ3 = zeros(5, 5); ρ3[4, 4] = 1
-    ρ4 = zeros(5, 5); ρ4[5, 5] = 1
-
+    ρ3 = zeros(Float64, 5, 5); ρ3[4, 4] = 1
+    ρ4 = zeros(Float64, 5, 5); ρ4[5, 5] = 1
     @test create(ρ3) ≈ (3+1) * ρ4
     @test annihilate(ρ4) ≈ 4 * ρ3
+    @test eltype(create(ρ3)) === Float64
+    @test eltype(annihilate(ρ4)) === Float64
+
+    v3 = zeros(Float32, 5); v3[4] = 1
+    v4 = zeros(Float32, 5); v4[5] = 1
+    @test create(v3) ≈ √(3+1) * v4
+    @test annihilate(v4) ≈ √4 * v3
+    @test eltype(create(v3)) === Float32
+    @test eltype(annihilate(v4)) === Float32
+
+    ρ3 = zeros(Float32, 5, 5); ρ3[4, 4] = 1
+    ρ4 = zeros(Float32, 5, 5); ρ4[5, 5] = 1
+    @test create(ρ3) ≈ (3+1) * ρ4
+    @test annihilate(ρ4) ≈ 4 * ρ3
+    @test eltype(create(ρ3)) === Float32
+    @test eltype(annihilate(ρ4)) === Float32
 end
 
 @testset "α and ξ" begin
