@@ -77,23 +77,3 @@ end
         exp(collect(0.5QSB.z(ξ)' * QSB.Annihilation(T, DIM)^2 - 0.5QSB.z(ξ) * QSB.Creation(T, DIM)^2)) * v0
     @test eltype(squeeze(v0, 1, π/4)) == complex(T)
 end
-
-# @testset "measurement" begin
-#     ψₙs = QSB.ψₙ.(big(0):big(DIM-1), 2., 3.)
-#     @test QSB.𝛑̂(2, 3, dim=DIM) ≈ ψₙs * ψₙs'
-# end
-
-# @testset "Gaussian state" begin
-#     𝐚 = rand(10, 10)
-#     𝐛 = rand(10, 10)
-
-#     @test QSB.tr_mul(𝐚, 𝐛) ≈ tr(𝐚 * 𝐛)
-
-#     state = SqueezedThermalState(ξ(1., π/4), 0.5)
-
-#     @test QSB.create_μ(state) ≈ tr(Creation(dim=state.dim) * state.𝛒)
-#     @test QSB.create²_μ(state) ≈ tr(Creation(dim=state.dim)^2 * state.𝛒)
-#     @test QSB.annihilate_μ(state) ≈ tr(Annihilation(dim=state.dim) * state.𝛒)
-#     @test QSB.annihilate²_μ(state) ≈ tr(Annihilation(dim=state.dim)^2 * state.𝛒)
-#     @test QSB.create_annihilate_μ(state) ≈ tr(Creation(dim=state.dim) * Annihilation(dim=state.dim) * state.𝛒)
-# end
