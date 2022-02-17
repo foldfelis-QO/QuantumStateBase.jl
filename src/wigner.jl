@@ -73,7 +73,7 @@ mutable struct WignerFunction{T<:Integer, U<:AbstractRange}
     end
 end
 
-function WignerFunction(x_range::AbstractRange, p_range::AbstractRange, dim)
+function WignerFunction(x_range::AbstractRange, p_range::AbstractRange; dim)
     return WignerFunction(x_range, p_range, dim)
 end
 
@@ -92,7 +92,6 @@ struct WignerSurface{T<:AbstractRange}
 end
 
 function (wf::WignerFunction)(ρ::AbstractMatrix{T}) where {T}
-    ρ = collect(ρ) # this is due to LazyArrays
     𝐰_surface = Matrix{Float64}(undef, length(wf.x_range), length(wf.p_range))
     @sync for i in 1:length(wf.x_range)
         Threads.@spawn for j in 1:length(wf.p_range)
@@ -107,7 +106,7 @@ end
 
 function wigner(ρ::AbstractMatrix{T}, x_range::AbstractRange, p_range::AbstractRange) where {T}
     dim = size(ρ, 1)
-    wf = WignerFunction(x_range, p_range, dim)
+    wf = WignerFunction(x_range, p_range, dim=dim)
 
     return wf(ρ)
 end
