@@ -51,14 +51,14 @@ end
     v0 = zeros(T, DIM); v0[1] = 1
     α = QSB.ComplexVec(2., π/4)
     @test displace(v0, 2, π/4) ≈
-        exp(collect(QSB.z(α) * QSB.Creation(T, DIM) - QSB.z(α)' * QSB.Annihilation(T, DIM))) * v0
+        exp(collect(QSB.z(α) * QSB.Creation(T, dim=DIM) - QSB.z(α)' * QSB.Annihilation(T, dim=DIM))) * v0
     @test eltype(displace(v0, 2, π/4)) == complex(T)
 
     T = Float32
     v0 = zeros(T, DIM); v0[1] = 1
     α = QSB.ComplexVec(2., π/4)
     @test displace(v0, 2, π/4) ≈
-        exp(collect(QSB.z(α) * QSB.Creation(T, DIM) - QSB.z(α)' * QSB.Annihilation(T, DIM))) * v0
+        exp(collect(QSB.z(α) * QSB.Creation(T, dim=DIM) - QSB.z(α)' * QSB.Annihilation(T, dim=DIM))) * v0
     @test eltype(displace(v0, 2, π/4)) == complex(T)
 end
 
@@ -67,13 +67,13 @@ end
     v0 = zeros(T, DIM); v0[1] = 1
     ξ = QSB.ComplexVec(1., π/4)
     @test squeeze(v0, 1, π/4) ≈
-        exp(collect(0.5QSB.z(ξ)' * QSB.Annihilation(T, DIM)^2 - 0.5QSB.z(ξ) * QSB.Creation(T, DIM)^2)) * v0
+        exp(collect(0.5QSB.z(ξ)' * QSB.Annihilation(T, dim=DIM)^2 - 0.5QSB.z(ξ) * QSB.Creation(T, dim=DIM)^2)) * v0
     @test eltype(squeeze(v0, 1, π/4)) == complex(T)
 
     T = Float32
     v0 = zeros(T, DIM); v0[1] = 1
     ξ = QSB.ComplexVec(1., π/4)
     @test squeeze(v0, 1, π/4) ≈
-        exp(collect(0.5QSB.z(ξ)' * QSB.Annihilation(T, DIM)^2 - 0.5QSB.z(ξ) * QSB.Creation(T, DIM)^2)) * v0
+        exp(collect(0.5QSB.z(ξ)' * QSB.Annihilation(T, dim=DIM)^2 - 0.5QSB.z(ξ) * QSB.Creation(T, dim=DIM)^2)) * v0
     @test eltype(squeeze(v0, 1, π/4)) == complex(T)
 end
