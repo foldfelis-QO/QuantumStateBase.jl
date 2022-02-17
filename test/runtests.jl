@@ -1,6 +1,5 @@
 using QuantumStateBase
 using Test
-using InfiniteArrays
 using LinearAlgebra
 using ClassicalOrthogonalPolynomials
 

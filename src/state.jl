@@ -19,37 +19,35 @@ export
 
 ##### Fock basis #####
 
-function FockState(T::Type{<:Number}, n::Integer, ::Type{Vector}; dim=∞)
-    v = cache(T.(Zeros(∞)))
-    v[n+1] = one(T)
+function FockState(T::Type{<:Number}, n::Integer, ::Type{Vector}; dim)
+    v = zeros(T, dim); v[n+1] = one(T)
 
-    return dim === ∞ ? v : view(v, 1:dim)
+    return v
 end
 
-function FockState(T::Type{<:Number}, n::Integer, ::Type{Matrix}; dim=∞)
-    ρ = cache(T.(Zeros(∞, ∞)))
-    ρ[n+1, n+1] = one(T)
+function FockState(T::Type{<:Number}, n::Integer, ::Type{Matrix}; dim)
+    ρ = zeros(T, dim, dim); ρ[n+1, n+1] = one(T)
 
-    return dim === ∞ ? ρ : view(ρ, 1:dim, 1:dim)
+    return ρ
 end
 
-FockState(n, rep; dim=∞) = FockState(Float64, n, rep, dim=dim)
+FockState(n, rep; dim) = FockState(Float64, n, rep, dim=dim)
 
-FockState(n; dim=∞) = FockState(n, Vector, dim=dim)
+FockState(n; dim) = FockState(n, Vector, dim=dim)
 
 const NumberState = FockState
 
-VacuumState(T, rep; dim=∞) = FockState(T, 0, rep, dim=dim)
+VacuumState(T, rep; dim) = FockState(T, 0, rep, dim=dim)
 
-VacuumState(rep; dim=∞) = FockState(Float64, 0, rep, dim=dim)
+VacuumState(rep; dim) = FockState(Float64, 0, rep, dim=dim)
 
-VacuumState(; dim=∞) = FockState(0, Vector, dim=dim)
+VacuumState(; dim) = FockState(0, Vector, dim=dim)
 
-SinglePhotonState(T, rep; dim=∞) = FockState(T, 1, rep, dim=dim)
+SinglePhotonState(T, rep; dim) = FockState(T, 1, rep, dim=dim)
 
-SinglePhotonState(rep; dim=∞) = FockState(Float64, 1, rep, dim=dim)
+SinglePhotonState(rep; dim) = FockState(Float64, 1, rep, dim=dim)
 
-SinglePhotonState(; dim=∞) = FockState(1, Vector, dim=dim)
+SinglePhotonState(; dim) = FockState(1, Vector, dim=dim)
 
 ##### pure state #####
 
@@ -81,13 +79,9 @@ bose_einstein(n::Number, n̄::Real) = n̄^n / (1 + n̄)^(n+1)
 
 bose_einstein(n̄) = n -> bose_einstein(n, n̄)
 
-function ThermalState(T::Type{<:Number}, n̄; dim=∞)
-    ρ = Diagonal(bose_einstein(n̄).(T.(0:∞)))
+ThermalState(T::Type{<:Number}, n̄; dim) = diagm(bose_einstein(n̄).(T.(0:dim)))
 
-    return dim === ∞ ? ρ : view(ρ, 1:dim, 1:dim)
-end
-
-ThermalState(n̄; dim=∞) = ThermalState(Float64, n̄, dim=dim)
+ThermalState(n̄; dim) = ThermalState(Float64, n̄, dim=dim)
 
 ### squeezed thermal state
 

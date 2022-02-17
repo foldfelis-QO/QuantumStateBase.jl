@@ -1,15 +1,3 @@
-@testset "utils" begin
-    v = cache(Zeros(∞)); v[1] = 1
-    ρ = cache(Zeros(∞, ∞)); v[1, 1] = 1
-
-    @test_throws BoundsError QSB.check_finite_size(v)
-    @test_throws BoundsError QSB.check_finite_size(ρ)
-    @test QSB.check_finite_size(view(v, 1:5))
-    @test QSB.check_finite_size(view(ρ, 1:5, 1:5))
-    @test QSB.check_finite_size(rand(5))
-    @test QSB.check_finite_size(rand(5, 5))
-end
-
 @testset "a† and a" begin
     v3 = zeros(Float64, 5); v3[4] = 1
     v4 = zeros(Float64, 5); v4[5] = 1

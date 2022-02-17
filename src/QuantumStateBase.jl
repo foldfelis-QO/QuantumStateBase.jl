@@ -1,5 +1,4 @@
 module QuantumStateBase
-    using InfiniteArrays
     using LinearAlgebra
     using ClassicalOrthogonalPolynomials
 

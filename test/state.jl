@@ -1,25 +1,25 @@
 @testset "Fock basis" begin
-    @test FockState(Float64, 3, Vector)[1:5] ≈ [0, 0, 0, 1, 0]
-    @test FockState(Float32, 3, Vector)[1:5] ≈ [0, 0, 0, 1, 0]
-    @test eltype(FockState(Float64, 3, Vector)) === Float64
-    @test eltype(FockState(Float32, 3, Vector)) === Float32
+    @test FockState(Float64, 3, Vector, dim=5) ≈ [0, 0, 0, 1, 0]
+    @test FockState(Float32, 3, Vector, dim=5) ≈ [0, 0, 0, 1, 0]
+    @test eltype(FockState(Float64, 3, Vector, dim=5)) === Float64
+    @test eltype(FockState(Float32, 3, Vector, dim=5)) === Float32
 
-    @test FockState(Float64, 3, Matrix)[1:5, 1:5] ≈ [
+    @test FockState(Float64, 3, Matrix, dim=5) ≈ [
         0 0 0 0 0;
         0 0 0 0 0;
         0 0 0 0 0;
         0 0 0 1 0;
         0 0 0 0 0;
     ]
-    @test FockState(Float32, 3, Matrix)[1:5, 1:5] ≈ [
+    @test FockState(Float32, 3, Matrix, dim=5) ≈ [
         0 0 0 0 0;
         0 0 0 0 0;
         0 0 0 0 0;
         0 0 0 1 0;
         0 0 0 0 0;
     ]
-    @test eltype(FockState(Float64, 3, Matrix)) === Float64
-    @test eltype(FockState(Float32, 3, Matrix)) === Float32
+    @test eltype(FockState(Float64, 3, Matrix, dim=5)) === Float64
+    @test eltype(FockState(Float32, 3, Matrix, dim=5)) === Float32
 
     @test FockState(0, Vector, dim=DIM) ≈ FockState(Float64, 0, Vector, dim=DIM)
     @test FockState(0, Matrix, dim=DIM) ≈ FockState(Float64, 0, Matrix, dim=DIM)
@@ -72,7 +72,7 @@ end
 end
 
 @testset "mixed state" begin
-    ρ = view(Diagonal(QSB.bose_einstein(0.3).(Float64.(0:∞))), 1:DIM, 1:DIM)
+    ρ = diagm(QSB.bose_einstein(0.3).(Float64.(0:DIM)))
     @test ThermalState(Float64, 0.3, dim=DIM) == ρ
     @test ThermalState(0.3, dim=DIM) == ρ
 
