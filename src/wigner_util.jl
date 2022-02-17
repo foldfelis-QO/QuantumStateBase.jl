@@ -55,25 +55,24 @@ end
 #########
 
 function save_𝐰(bin_path::String, 𝐰::Array{ComplexF64,4})
-    @info "Save W_{m,n,x,p} to $bin_path"
+    @info "Save Wₘₙₓₚ to $bin_path"
     mem = open(bin_path, "w+")
     write(mem, 𝐰)
     close(mem)
 end
 
 function load_𝐰(
-    m_dim::Integer,
-    n_dim::Integer,
+    bin_path::String,
     x_range::AbstractRange,
     p_range::AbstractRange,
-    bin_path::String
+    dim::Integer
 )
-    @info "Load W_{m,n,x,p} from $bin_path"
+    @info "Load Wₘₙₓₚ from $bin_path"
     mem = open(bin_path)
     𝐰 = Mmap.mmap(
         mem,
         Array{ComplexF64,4},
-        (m_dim, n_dim, length(x_range), length(p_range))
+        (dim, dim, length(x_range), length(p_range))
     )
     close(mem)
 
@@ -81,16 +80,14 @@ function load_𝐰(
 end
 
 function gen_wigner_bin_path(
-    m_dim::Integer,
-    n_dim::Integer,
     x_range::AbstractRange,
     p_range::AbstractRange,
+    dim::Integer,
 )
     bin_path = joinpath(
-        mkpath(joinpath(datadep_root(), "wigner_function")),
+        mkpath(joinpath(".", "wigner_function")),
         "W " *
-        "m=$(m_dim) n=$(n_dim) " *
-        "x=$(range2str(x_range)) p=$(range2str(p_range)).bin"
+        "x=$(range2str(x_range)) p=$(range2str(p_range)) dim=$dim.bin"
     )
 
     return bin_path
@@ -98,10 +95,10 @@ end
 
 range2str(range::AbstractRange) = replace(string(range), r":|," => "_")
 
-check_zero(m_dim, n_dim) = !iszero(m_dim) && !iszero(n_dim)
+# check_zero(m_dim, n_dim) = !iszero(m_dim) && !iszero(n_dim)
 
-check_empty(x_range, p_range) = !isempty(x_range) && !isempty(p_range)
+# check_empty(x_range, p_range) = !isempty(x_range) && !isempty(p_range)
 
-function check_argv(m_dim, n_dim, x_range, p_range)
-    return check_zero(m_dim, n_dim) && check_empty(x_range, p_range)
-end
+# function check_argv(m_dim, n_dim, x_range, p_range)
+#     return check_zero(m_dim, n_dim) && check_empty(x_range, p_range)
+# end
