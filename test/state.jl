@@ -1,23 +1,82 @@
-@testset "pure state" begin
-    dim = DIM
+@testset "Fock basis" begin
+    @test FockState(Float64, 3, Vector, dim=5) ≈ [0, 0, 0, 1, 0]
+    @test FockState(Float32, 3, Vector, dim=5) ≈ [0, 0, 0, 1, 0]
+    @test eltype(FockState(Float64, 3, Vector, dim=5)) === Float64
+    @test eltype(FockState(Float32, 3, Vector, dim=5)) === Float32
 
-    @test CoherentState(α(2., π/4), dim=dim) == displace!(VacuumState(dim=dim), α(2., π/4))
-    @test CoherentState(α(2., π/4), dim=dim, rep=StateMatrix) ==
-        displace!(VacuumState(dim=dim, rep=StateMatrix), α(2., π/4))
-    @test SqueezedState(ξ(2., π/4), dim=dim) == squeeze!(VacuumState(dim=dim), ξ(2., π/4))
-    @test SqueezedState(ξ(2., π/4), dim=dim, rep=StateMatrix) ==
-        squeeze!(VacuumState(dim=dim, rep=StateMatrix), ξ(2., π/4))
+    @test FockState(Float64, 3, Matrix, dim=5) ≈ [
+        0 0 0 0 0;
+        0 0 0 0 0;
+        0 0 0 0 0;
+        0 0 0 1 0;
+        0 0 0 0 0;
+    ]
+    @test FockState(Float32, 3, Matrix, dim=5) ≈ [
+        0 0 0 0 0;
+        0 0 0 0 0;
+        0 0 0 0 0;
+        0 0 0 1 0;
+        0 0 0 0 0;
+    ]
+    @test eltype(FockState(Float64, 3, Matrix, dim=5)) === Float64
+    @test eltype(FockState(Float32, 3, Matrix, dim=5)) === Float32
+
+    @test FockState(0, Vector, dim=DIM) ≈ FockState(Float64, 0, Vector, dim=DIM)
+    @test FockState(0, Matrix, dim=DIM) ≈ FockState(Float64, 0, Matrix, dim=DIM)
+    @test FockState(0, dim=DIM) ≈ FockState(Float64, 0, Vector, dim=DIM)
+
+    @test NumberState === FockState
+
+    @test VacuumState(Float64, Vector, dim=DIM) == FockState(Float64, 0, Vector, dim=DIM)
+    @test VacuumState(Float64, Matrix, dim=DIM) == FockState(Float64, 0, Matrix, dim=DIM)
+    @test VacuumState(Vector, dim=DIM) == FockState(Float64, 0, Vector, dim=DIM)
+    @test VacuumState(Matrix, dim=DIM) == FockState(Float64, 0, Matrix, dim=DIM)
+    @test VacuumState(dim=DIM) == FockState(0, Vector, dim=DIM)
+
+    @test SinglePhotonState(Float64, Vector, dim=DIM) == FockState(Float64, 1, Vector, dim=DIM)
+    @test SinglePhotonState(Float64, Matrix, dim=DIM) == FockState(Float64, 1, Matrix, dim=DIM)
+    @test SinglePhotonState(Vector, dim=DIM) == FockState(Float64, 1, Vector, dim=DIM)
+    @test SinglePhotonState(Matrix, dim=DIM) == FockState(Float64, 1, Matrix, dim=DIM)
+    @test SinglePhotonState(dim=DIM) == FockState(1, Vector, dim=DIM)
+end
+
+@testset "pure state" begin
+    v = displace(VacuumState(Float64, Vector, dim=DIM), 2, π/4)
+    @test CoherentState(ComplexF64, 2, π/4, Vector, dim=DIM) == v
+    @test CoherentState(2, π/4, Vector, dim=DIM) == v
+    @test CoherentState(2, π/4, dim=DIM) == v
+    v = displace(VacuumState(Float32, Vector, dim=DIM), 2, π/4)
+    @test CoherentState(ComplexF32, 2, π/4, Vector, dim=DIM) == v
+
+
+    ρ = displace(VacuumState(Float64, Matrix, dim=DIM), 2, π/4)
+    @test CoherentState(ComplexF64, 2, π/4, Matrix, dim=DIM) == ρ
+    @test CoherentState(2, π/4, Matrix, dim=DIM) == ρ
+    ρ = displace(VacuumState(Float32, Matrix, dim=DIM), 2, π/4)
+    @test CoherentState(ComplexF32, 2, π/4, Matrix, dim=DIM) == ρ
+
+    v = squeeze(VacuumState(Float64, Vector, dim=DIM), 2, π/4)
+    @test SqueezedState(ComplexF64, 2, π/4, Vector, dim=DIM) == v
+    @test SqueezedState(2, π/4, Vector, dim=DIM) == v
+    @test SqueezedState(2, π/4, dim=DIM) == v
+    v = squeeze(VacuumState(Float32, Vector, dim=DIM), 2, π/4)
+    @test SqueezedState(ComplexF32, 2, π/4, Vector, dim=DIM) == v
+
+
+    ρ = squeeze(VacuumState(Float64, Matrix, dim=DIM), 2, π/4)
+    @test SqueezedState(ComplexF64, 2, π/4, Matrix, dim=DIM) == ρ
+    @test SqueezedState(2, π/4, Matrix, dim=DIM) == ρ
+    ρ = squeeze(VacuumState(Float32, Matrix, dim=DIM), 2, π/4)
+    @test SqueezedState(ComplexF32, 2, π/4, Matrix, dim=DIM) == ρ
+
 end
 
 @testset "mixed state" begin
-    dim = DIM
+    ρ = diagm(QSB.bose_einstein(0.3).(Float64.(0:DIM)))
+    @test ThermalState(Float64, 0.3, dim=DIM) == ρ
+    @test ThermalState(0.3, dim=DIM) == ρ
 
-    n̄ = 0.5
-    n = 5
-    @test QSB.bose_einstein(n̄)(n) == n̄^n / (1 + n̄)^(n+1)
-
-    @test ThermalState(n̄, dim=dim) ==
-        StateMatrix(diagm(QSB.bose_einstein(n̄).(ComplexF64.(0:dim-1))), dim)
-    @test SqueezedThermalState(ξ(1., π/4), n̄, dim=dim) ==
-        squeeze!(ThermalState(ComplexF64, n̄, dim=dim), ξ(1., π/4))
+    ρ = squeeze(ThermalState(Float64, 0.3, dim=DIM), 1, π/4)
+    @test SqueezedThermalState(ComplexF64, 1, π/4, 0.3, dim=DIM) == ρ
+    @test SqueezedThermalState(1, π/4, 0.3, dim=DIM) == ρ
 end
