@@ -94,11 +94,3 @@ function gen_wigner_bin_path(
 end
 
 range2str(range::AbstractRange) = replace(string(range), r":|," => "_")
-
-# check_zero(m_dim, n_dim) = !iszero(m_dim) && !iszero(n_dim)
-
-# check_empty(x_range, p_range) = !isempty(x_range) && !isempty(p_range)
-
-# function check_argv(m_dim, n_dim, x_range, p_range)
-#     return check_zero(m_dim, n_dim) && check_empty(x_range, p_range)
-# end

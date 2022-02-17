@@ -15,6 +15,6 @@ const DIM = 100
     include("state.jl")
 
     # wigner
-    # include("wigner_util.jl")
-    # include("wigner.jl")
+    include("wigner_util.jl")
+    include("wigner.jl")
 end

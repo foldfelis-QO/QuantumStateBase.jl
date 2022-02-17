@@ -17,7 +17,6 @@ function calc_wigner(
     ps = collect(p_range)
     @sync for m in 1:dim
         Threads.@spawn for n in 1:dim
-            # 𝐰[m, n, :, :] = wigner(m, n, collect(x_range), collect(p_range))
             𝐰[m, n, :, :] .=
                 gaussian_function(xs, ps) .*
                 coefficient_of_wave_function(m, n) .*
