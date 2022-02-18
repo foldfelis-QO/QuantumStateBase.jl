@@ -54,11 +54,21 @@ end
 # utils #
 #########
 
-function save_𝐰(bin_path::String, 𝐰::Array{ComplexF64,4})
-    @info "Save Wₘₙₓₚ to $bin_path"
-    mem = open(bin_path, "w+")
-    write(mem, 𝐰)
-    close(mem)
+function save_𝐰(bin_name::String, 𝐰::Array{ComplexF64,4})
+    global my_artifacts
+    hash = create_my_artifact() do artifact_dir
+        path = joinpath(artifact_dir, bin_name)
+        mem = open(path, "w+")
+        write(mem, 𝐰)
+        close(mem)
+
+        return path
+    end
+    bind_my_artifact!(my_artifacts[], bin_name, hash)
+
+    @info "Save Wₘₙₓₚ to $bin_name"
+
+    return my_artifact_path(hash)
 end
 
 function load_𝐰(
@@ -67,7 +77,6 @@ function load_𝐰(
     p_range::AbstractRange,
     dim::Integer
 )
-    @info "Load Wₘₙₓₚ from $bin_path"
     mem = open(bin_path)
     𝐰 = Mmap.mmap(
         mem,
@@ -76,21 +85,15 @@ function load_𝐰(
     )
     close(mem)
 
+    @info "Load Wₘₙₓₚ from $bin_path"
+
     return 𝐰
 end
 
-function gen_wigner_bin_path(
+function gen_wigner_bin_name(
     x_range::AbstractRange,
     p_range::AbstractRange,
     dim::Integer,
 )
-    bin_path = joinpath(
-        mkpath(joinpath(".", "wigner_function")),
-        "W " *
-        "x=$(range2str(x_range)) p=$(range2str(p_range)) dim=$dim.bin"
-    )
-
-    return bin_path
+    return string(hash((x_range, p_range, dim)))
 end
-
-range2str(range::AbstractRange) = replace(string(range), r":|," => "_")

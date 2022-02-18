@@ -42,14 +42,15 @@ function create_wigner(
     p_range::AbstractRange,
     dim::Integer
 )
-    bin_path = gen_wigner_bin_path(x_range, p_range, dim)
+    bin_name = gen_wigner_bin_name(x_range, p_range, dim)
+    hash = my_artifact_hash(bin_name, my_artifacts[])
 
-    if isfile(bin_path)
-        return load_wigner(bin_path, x_range, p_range, dim)
+    if !isnothing(hash) && my_artifact_exists(hash)
+        return load_wigner(my_artifact_path(hash), x_range, p_range, dim)
     end
 
     𝐰 = calc_wigner(x_range, p_range, dim)
-    save_𝐰(bin_path, 𝐰)
+    save_𝐰(bin_name, 𝐰)
 
     return 𝐰
 end
@@ -65,7 +66,6 @@ mutable struct WignerFunction{T<:Integer, U<:AbstractRange}
         p_range::U,
         dim::T
     ) where {T<:Integer, U<:AbstractRange}
-        # !check_argv(m_dim, n_dim, x_range, p_range) && throw(ArgumentError)
         𝐰 = create_wigner(x_range, p_range, dim)
 
         return new{T, U}(𝐰, x_range, p_range, dim)
