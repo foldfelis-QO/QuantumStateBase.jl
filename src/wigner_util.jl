@@ -97,5 +97,3 @@ function gen_wigner_bin_name(
 )
     return string(hash((x_range, p_range, dim)))
 end
-
-range2str(range::AbstractRange) = replace(string(range), r":|," => "_")
