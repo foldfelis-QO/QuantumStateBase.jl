@@ -95,7 +95,7 @@ function gen_wigner_bin_name(
     p_range::AbstractRange,
     dim::Integer,
 )
-    return "x=$(range2str(x_range)) p=$(range2str(p_range)) dim=$dim.bin"
+    return string(hash((x_range, p_range, dim)))
 end
 
 range2str(range::AbstractRange) = replace(string(range), r":|," => "_")
