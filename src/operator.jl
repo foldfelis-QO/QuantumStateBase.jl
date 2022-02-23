@@ -79,7 +79,7 @@ end
 """
     QuantumStateBase.Annihilation(T; dim::Integer)
 
-Annihilation operator in matrix form.
+Construct an annihilation operator in matrix form.
 
 ``\\hat{a}``
 """
