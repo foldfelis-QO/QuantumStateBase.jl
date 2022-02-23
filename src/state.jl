@@ -165,6 +165,8 @@ ThermalState(n̄; dim) = ThermalState(Float64, n̄, dim=dim)
 """
     SqueezedThermalState([T::Type{<:Complex}], r::Real, θ::Real, n̄::Real; dim::Integer)
 
+Construct a squeezed thermal state.
+
 Squeezed thermal state is defined if its electric field strength for some phases has a
 quantum uncertainty smaller than that of a coherent state.
 
