@@ -157,7 +157,7 @@ end
 """
     QuantumStateBase.ComplexVec(r::T, θ::T)
 
-Vector in polar coordinate for complex plane.
+Construct a vector in polar coordinate for complex plane.
 
 ``v = re^{-i\\theta}``
 
