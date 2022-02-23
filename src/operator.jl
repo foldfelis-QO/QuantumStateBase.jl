@@ -10,7 +10,7 @@ export
 """
     QuantumStateBase.Creation(T; dim::Integer)
 
-Creation operator in matrix form.
+Construct a creation operator in matrix form.
 
 ``\\hat{a}^{\\dagger}``
 """
