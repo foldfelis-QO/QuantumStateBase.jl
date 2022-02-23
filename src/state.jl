@@ -22,7 +22,7 @@ export
 """
     FockState([T::Type{<:Number}], n::Integer, [rep::Type]; dim::Integer)
 
-Construct a Fock state in `rep`  representation.
+Construct a Fock state in `rep` representation.
 
 ## Arguments
 
