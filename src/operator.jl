@@ -281,12 +281,21 @@ Apply squeezing operator on a quantum state.
 ## Examples
 
 ```jldoctest
-julia> state = VacuumState(dim=5);
+julia> state = VacuumState(dim=5)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
 
-julia> new_state = squeeze(state, 0.5, π/4);
-
-julia> new_state == SqueezedState(0.5, π/4, dim=5)
-true
+julia> squeeze(state, 0.5, π/4)
+5-element Vector{ComplexF64}:
+     0.9419264274916698 + 0.0im
+                    0.0 + 0.0im
+   -0.21510388914370943 + 0.21510388914370937im
+                    0.0 + 0.0im
+ 3.0228557826221164e-17 - 0.1422506201859301im
 ```
 
 ```jldoctest
