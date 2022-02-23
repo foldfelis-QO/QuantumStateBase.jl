@@ -145,6 +145,8 @@ bose_einstein(n̄) = n -> bose_einstein(n, n̄)
 """
     ThermalState([T::Type{<:Number}], n̄::Real; dim::Integer)
 
+Construct a thermal state.
+
 Thermal state is a mixed state with photon number distribution described by
 Bose-Einstein distribution.
 
