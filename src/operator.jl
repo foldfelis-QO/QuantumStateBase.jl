@@ -212,12 +212,21 @@ Apply displacement operator on a quantum state.
 ## Examples
 
 ```jldoctest
-julia> state = VacuumState(dim=5);
+julia> state = VacuumState(dim=5)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
 
-julia> new_state = displace(state, 2, π/4);
-
-julia> new_state == CoherentState(2, π/4, dim=5)
-true
+julia> displace(state, 2, π/4)
+5-element Vector{ComplexF64}:
+   0.14864196494651452 - 5.551115123125783e-17im
+   0.15309939720606983 - 0.15309939720606955im
+ 8.326672684688674e-17 - 0.5201876236174409im
+   -0.1359447277638306 - 0.13594472776383068im
+   -0.7896009204837534 - 3.0531133177191805e-16im
 ```
 """
 function displace(v::AbstractVector{T}, r, θ) where {T}
