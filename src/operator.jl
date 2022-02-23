@@ -249,7 +249,7 @@ end
 """
     QuantumStateBase.Squeezing(T::Type{<:Complex}, r::Real, θ::Real; dim::Integer)
 
-Squeezing operator in matrix form.
+Construct a squeezing operator in matrix form.
 
 ## Arguments
 
