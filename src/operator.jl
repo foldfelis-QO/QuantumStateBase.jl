@@ -185,7 +185,7 @@ z(complexvec::ComplexVec) = complexvec.r * exp(-im * complexvec.θ)
 """
     QuantumStateBase.Displacement(T::Type{<:Complex}, r::Real, θ::Real; dim::Integer)
 
-Displacement operator in matrix form.
+Construct a displacement operator in matrix form.
 
 ``\\hat{D}(\\alpha) = exp(\\alpha \\hat{a}^{\\dagger} - \\alpha^{*} \\hat{a})``
 """
