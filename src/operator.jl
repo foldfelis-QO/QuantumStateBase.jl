@@ -272,12 +272,21 @@ true
 ```
 
 ```jldoctest
-julia> state = VacuumState(Matrix, dim=5);
+julia> state = VacuumState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
 
-julia> new_state = squeeze(state, 0.5, π/4);
-
-julia> new_state == SqueezedState(0.5, π/4, Matrix, dim=5)
-true
+julia> squeeze(state, 0.5, π/4)
+5×5 Matrix{ComplexF64}:
+    0.887225+0.0im       0.0+0.0im   -0.202612-0.202612im   0.0+0.0im  2.84731e-17+0.13399im
+         0.0+0.0im       0.0+0.0im         0.0+0.0im        0.0+0.0im          0.0+0.0im
+   -0.202612+0.202612im  0.0+0.0im   0.0925394+0.0im        0.0+0.0im   -0.0305987-0.0305987im
+         0.0+0.0im       0.0+0.0im         0.0+0.0im        0.0+0.0im          0.0+0.0im
+ 2.84731e-17-0.13399im   0.0+0.0im  -0.0305987+0.0305987im  0.0+0.0im    0.0202352+0.0im
 ```
 """
 function squeeze(v::AbstractVector{T}, r, θ) where {T}
