@@ -115,12 +115,21 @@ julia> annihilate(state)
 ```
 
 ```jldoctest
-julia> state = SinglePhotonState(Matrix, dim=5);
+julia> state = SinglePhotonState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
 
-julia> new_state = annihilate(state);
-
-julia> new_state == VacuumState(Matrix, dim=5)
-true
+julia> annihilate(state)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
 ```
 """
 function annihilate(v::AbstractVector{T}) where {T}
