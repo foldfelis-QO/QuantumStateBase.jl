@@ -46,12 +46,21 @@ julia> create(state)
 ```
 
 ```jldoctest
-julia> state = VacuumState(Matrix, dim=5);
+julia> state = VacuumState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
 
-julia> new_state = create(state);
-
-julia> new_state == SinglePhotonState(Matrix, dim=5)
-true
+julia> create(state)
+5×5 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
 ```
 """
 function create(v::AbstractVector{T}) where {T}
