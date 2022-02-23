@@ -28,12 +28,21 @@ Apply creation operator on a quantum state.
 ## Examples
 
 ```jldoctest
-julia> state = VacuumState(dim=5);
+julia> state = VacuumState(dim=5)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
 
-julia> new_state = create(state);
-
-julia> new_state == SinglePhotonState(dim=5)
-true
+julia> create(state)
+5-element Vector{Float64}:
+ 0.0
+ 1.0
+ 0.0
+ 0.0
+ 0.0
 ```
 
 ```jldoctest
