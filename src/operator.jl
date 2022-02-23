@@ -17,25 +17,31 @@ Creation operator in matrix form.
 Creation(T; dim::Integer) = .√(diagm(-1 => T.(Base.OneTo(dim-1))))
 
 """
-    create(v::AbstractVector{T})
-
-    create(ρ::AbstractMatrix{T})
+    create(s::AbstractArray{T})
 
 Apply creation operator on a quantum state.
 
 ## Arguments
 
-* `v`: A quantum state vector.
-* `ρ`: Density matrix of a quantum state.
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
 
 ## Examples
 
-```julia-repl
-julia> state = VacuumState(dim = 5);
+```jldoctest
+julia> state = VacuumState(dim=5);
 
-julia> new_state = Create(state);
+julia> new_state = create(state);
 
-julia> new_state == SinglePhotonState(dim = 5)
+julia> new_state == SinglePhotonState(dim=5)
+true
+```
+
+```jldoctest
+julia> state = VacuumState(Matrix, dim=5);
+
+julia> new_state = create(state);
+
+julia> new_state == SinglePhotonState(Matrix, dim=5)
 true
 ```
 """
@@ -62,25 +68,31 @@ Annihilation operator in matrix form.
 Annihilation(T; dim::Integer) = .√(diagm(1 => T.(Base.OneTo(dim-1))))
 
 """
-    annihilate(v::AbstractVector{T})
-
-    annihilate(ρ::AbstractMatrix{T})
+    annihilate(s::AbstractArray{T})
 
 Apply annihilation operator on a quantum state.
 
 ## Arguments
 
-* `v`: A quantum state vector.
-* `ρ`: Density matrix of a quantum state.
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
 
 ## Examples
 
-```julia-repl
-julia> state = SinglePhotonState(dim = 5);
+```jldoctest
+julia> state = SinglePhotonState(dim=5);
 
 julia> new_state = annihilate(state);
 
-julia> new_state == VacuumState(dim = 5)
+julia> new_state == VacuumState(dim=5)
+true
+```
+
+```jldoctest
+julia> state = SinglePhotonState(Matrix, dim=5);
+
+julia> new_state = annihilate(state);
+
+julia> new_state == VacuumState(Matrix, dim=5)
 true
 ```
 """
@@ -135,7 +147,7 @@ z(complexvec::ComplexVec) = complexvec.r * exp(-im * complexvec.θ)
 # displacement #
 ################
 """
-    QuantumStateBase.Displacement(T::Type{<:Complex}, r::Real, θ::Real; dim)
+    QuantumStateBase.Displacement(T::Type{<:Complex}, r::Real, θ::Real; dim::Integer)
 
 Displacement operator in matrix form.
 
@@ -151,27 +163,24 @@ function Displacement(T::Type{<:Complex}, r::Real, θ::Real; dim)
 end
 
 """
-    displace(v::AbstractVector{T}, r, θ)
-
-    displace(ρ::AbstractMatrix{T}, r, θ)
+    displace(s::AbstractArray{T}, r, θ)
 
 Apply displacement operator on a quantum state.
 
 ## Arguments
 
-* `v`: A quantum state vector.
-* `ρ`: Density matrix of a quantum state.
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
 * `r`: Radius of displacement.
 * `θ`: Phase of displacement.
 
 ## Examples
 
-```julia-repl
-julia> state = VacuumState(dim = 5);
+```jldoctest
+julia> state = VacuumState(dim=5);
 
 julia> new_state = displace(state, 2, π/4);
 
-julia> new_state == CoherentState(2, π/4, dim = 5)
+julia> new_state == CoherentState(2, π/4, dim=5)
 true
 ```
 """
@@ -193,7 +202,7 @@ end
 #############
 
 """
-    QuantumStateBase.Squeezing(T::Type{<:Complex}, r::Real, θ::Real; dim)
+    QuantumStateBase.Squeezing(T::Type{<:Complex}, r::Real, θ::Real; dim::Integer)
 
 Squeezing operator in matrix form.
 
@@ -214,27 +223,33 @@ function Squeezing(T::Type{<:Complex}, r::Real, θ::Real; dim)
 end
 
 """
-    squeeze(v::AbstractVector{T})
-
-    squeeze(ρ::AbstractMatrix{T})
+    squeeze(s::AbstractArray{T})
 
 Apply squeezing operator on a quantum state.
 
 ## Arguments
 
-* `v`: A quantum state vector.
-* `ρ`: Density matrix of a quantum state.
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
 * `r`: Squeezing level.
 * `θ`: Squeezing phase.
 
 ## Examples
 
-```julia-repl
-julia> state = VacuumState(dim = 5);
+```jldoctest
+julia> state = VacuumState(dim=5);
 
 julia> new_state = squeeze(state, 0.5, π/4);
 
-julia> new_state == SqueezedState(0.5, π/4, dim = 5)
+julia> new_state == SqueezedState(0.5, π/4, dim=5)
+true
+```
+
+```jldoctest
+julia> state = VacuumState(Matrix, dim=5);
+
+julia> new_state = squeeze(state, 0.5, π/4);
+
+julia> new_state == SqueezedState(0.5, π/4, Matrix, dim=5)
 true
 ```
 """
