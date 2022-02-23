@@ -97,12 +97,21 @@ Apply annihilation operator on a quantum state.
 ## Examples
 
 ```jldoctest
-julia> state = SinglePhotonState(dim=5);
+julia> state = SinglePhotonState(dim=5)
+5-element Vector{Float64}:
+ 0.0
+ 1.0
+ 0.0
+ 0.0
+ 0.0
 
-julia> new_state = annihilate(state);
-
-julia> new_state == VacuumState(dim=5)
-true
+julia> annihilate(state)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
 ```
 
 ```jldoctest
