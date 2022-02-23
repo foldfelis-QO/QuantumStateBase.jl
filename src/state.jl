@@ -111,6 +111,8 @@ CoherentState(r, θ; dim) = CoherentState(r, θ, Vector, dim=dim)
 """
     SqueezedState([T::Type{<:Complex}], r::Real, θ::Real, [rep::Type]; dim::Integer)
 
+Construct a squeezed state in `rep` representation.
+
 Squeezed state is defined if its electric field strength for some phases has a quantum
 uncertainty smaller than that of a coherent state.
 
