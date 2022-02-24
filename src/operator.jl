@@ -228,6 +228,24 @@ julia> displace(state, 2, π/4) |> x->round.(x, sigdigits=5)
    -0.13594 - 0.13594im
     -0.7896 - 3.0531e-16im
 ```
+
+```jldoctest
+julia> state = VacuumState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+
+julia> displace(state, 2, π/4) |> x->round.(x, sigdigits=3)
+5×5 Matrix{ComplexF64}:
+   0.0221+0.0im          0.0228+0.0228im  4.13e-17+0.0773im    -0.0202+0.0202im    -0.117+8.92e-17im
+   0.0228-0.0228im       0.0469+0.0im       0.0796+0.0796im  -2.43e-17+0.0416im    -0.121+0.121im
+ 4.13e-17-0.0773im       0.0796-0.0796im     0.271+0.0im        0.0707+0.0707im  9.31e-17+0.411im
+  -0.0202-0.0202im    -2.43e-17-0.0416im    0.0707-0.0707im      0.037+0.0im        0.107+0.107im
+   -0.117-8.92e-17im     -0.121-0.121im   9.31e-17-0.411im       0.107-0.107im      0.623+0.0im
+```
 """
 function displace(v::AbstractVector{T}, r, θ) where {T}
     dim = length(v)
