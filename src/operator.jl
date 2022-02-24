@@ -211,7 +211,7 @@ Apply displacement operator on a quantum state.
 
 ## Examples
 
-```jldoctest
+```julia-repl
 julia> state = VacuumState(dim=5)
 5-element Vector{Float64}:
  1.0
@@ -221,10 +221,15 @@ julia> state = VacuumState(dim=5)
  0.0
 
 julia> displace(state, 2, π/4)
-[...]
+5-element Vector{ComplexF64}:
+   0.14864196494651452 - 5.551115123125783e-17im
+   0.15309939720606983 - 0.15309939720606955im
+ 8.326672684688674e-17 - 0.5201876236174409im
+   -0.1359447277638306 - 0.13594472776383068im
+   -0.7896009204837534 - 3.0531133177191805e-16im
 ```
 
-```jldoctest
+```julia-repl
 julia> state = VacuumState(Matrix, dim=5)
 5×5 Matrix{Float64}:
  1.0  0.0  0.0  0.0  0.0
@@ -234,7 +239,12 @@ julia> state = VacuumState(Matrix, dim=5)
  0.0  0.0  0.0  0.0  0.0
 
 julia> displace(state, 2, π/4)
-[...]
+5×5 Matrix{ComplexF64}:
+   0.0220944+0.0im              0.022757+0.022757im   4.12531e-17+0.0773217im    -0.0202071+0.0202071im    -0.117368+8.92137e-17im
+    0.022757-0.022757im        0.0468789+0.0im          0.0796404+0.0796404im  -2.42861e-17+0.0416261im    -0.120887+0.120887im
+ 4.12531e-17-0.0773217im       0.0796404-0.0796404im     0.270595+0.0im           0.0707168+0.0707168im  9.30717e-17+0.410741im
+  -0.0202071-0.0202071im    -2.42861e-17-0.0416261im    0.0707168-0.0707168im     0.0369619+0.0im           0.107342+0.107342im
+   -0.117368-8.92137e-17im     -0.120887-0.120887im   9.30717e-17-0.410741im       0.107342-0.107342im       0.62347+0.0im
 ```
 """
 function displace(v::AbstractVector{T}, r, θ) where {T}
@@ -288,7 +298,7 @@ Apply squeezing operator on a quantum state.
 
 ## Examples
 
-```jldoctest
+```julia-repl
 julia> state = VacuumState(dim=5)
 5-element Vector{Float64}:
  1.0
@@ -298,10 +308,15 @@ julia> state = VacuumState(dim=5)
  0.0
 
 julia> squeeze(state, 0.5, π/4)
-[...]
+5-element Vector{ComplexF64}:
+     0.9419264274916698 + 0.0im
+                    0.0 + 0.0im
+   -0.21510388914370943 + 0.21510388914370937im
+                    0.0 + 0.0im
+ 3.0228557826221164e-17 - 0.1422506201859301im
 ```
 
-```jldoctest
+```julia-repl
 julia> state = VacuumState(Matrix, dim=5)
 5×5 Matrix{Float64}:
  1.0  0.0  0.0  0.0  0.0
@@ -311,7 +326,12 @@ julia> state = VacuumState(Matrix, dim=5)
  0.0  0.0  0.0  0.0  0.0
 
 julia> squeeze(state, 0.5, π/4)
-[...]
+5×5 Matrix{ComplexF64}:
+    0.887225+0.0im       0.0+0.0im   -0.202612-0.202612im   0.0+0.0im  2.84731e-17+0.13399im
+         0.0+0.0im       0.0+0.0im         0.0+0.0im        0.0+0.0im          0.0+0.0im
+   -0.202612+0.202612im  0.0+0.0im   0.0925394+0.0im        0.0+0.0im   -0.0305987-0.0305987im
+         0.0+0.0im       0.0+0.0im         0.0+0.0im        0.0+0.0im          0.0+0.0im
+ 2.84731e-17-0.13399im   0.0+0.0im  -0.0305987+0.0305987im  0.0+0.0im    0.0202352+0.0im
 ```
 """
 function squeeze(v::AbstractVector{T}, r, θ) where {T}
