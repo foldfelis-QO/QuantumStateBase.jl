@@ -222,12 +222,6 @@ julia> state = VacuumState(dim=5)
 
 julia> displace(state, 2, π/4)
 [...]
-5-element Vector{ComplexF64}:
-    0.14864 - 5.5511e-17im
-     0.1531 - 0.1531im
- 8.3267e-17 - 0.52019im
-   -0.13594 - 0.13594im
-    -0.7896 - 3.0531e-16im
 ```
 
 ```jldoctest
@@ -241,12 +235,6 @@ julia> state = VacuumState(Matrix, dim=5)
 
 julia> displace(state, 2, π/4)
 [...]
-5×5 Matrix{ComplexF64}:
-   0.0221+0.0im          0.0228+0.0228im  …    -0.117+8.92e-17im
-   0.0228-0.0228im       0.0469+0.0im          -0.121+0.121im
- 4.13e-17-0.0773im       0.0796-0.0796im     9.31e-17+0.411im
-  -0.0202-0.0202im    -2.43e-17-0.0416im        0.107+0.107im
-   -0.117-8.92e-17im     -0.121-0.121im         0.623+0.0im
 ```
 """
 function displace(v::AbstractVector{T}, r, θ) where {T}
@@ -311,12 +299,6 @@ julia> state = VacuumState(dim=5)
 
 julia> squeeze(state, 0.5, π/4)
 [...]
-5-element Vector{ComplexF64}:
-    0.94193 + 0.0im
-        0.0 + 0.0im
-    -0.2151 + 0.2151im
-        0.0 + 0.0im
- 3.0229e-17 - 0.14225im
 ```
 
 ```jldoctest
@@ -330,12 +312,6 @@ julia> state = VacuumState(Matrix, dim=5)
 
 julia> squeeze(state, 0.5, π/4)
 [...]
-5×5 Matrix{ComplexF64}:
-    0.887+0.0im    0.0+0.0im   -0.203-0.203im   0.0+0.0im  2.85e-17+0.134im
-      0.0+0.0im    0.0+0.0im      0.0+0.0im     0.0+0.0im       0.0+0.0im
-   -0.203+0.203im  0.0+0.0im   0.0925+0.0im     0.0+0.0im   -0.0306-0.0306im
-      0.0+0.0im    0.0+0.0im      0.0+0.0im     0.0+0.0im       0.0+0.0im
- 2.85e-17-0.134im  0.0+0.0im  -0.0306+0.0306im  0.0+0.0im    0.0202+0.0im
 ```
 """
 function squeeze(v::AbstractVector{T}, r, θ) where {T}
