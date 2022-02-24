@@ -7,9 +7,62 @@ export
 ############
 # a† and a #
 ############
+"""
+    QuantumStateBase.Creation(T; dim::Integer)
 
+Construct a creation operator in matrix form.
+
+``\\hat{a}^{\\dagger}``
+"""
 Creation(T; dim::Integer) = .√(diagm(-1 => T.(Base.OneTo(dim-1))))
 
+"""
+    create(s::AbstractArray{T})
+
+Apply creation operator on a quantum state.
+
+## Arguments
+
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
+
+## Examples
+
+```jldoctest
+julia> state = VacuumState(dim=5)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> create(state)
+5-element Vector{Float64}:
+ 0.0
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+```
+
+```jldoctest
+julia> state = VacuumState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+
+julia> create(state)
+5×5 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+```
+"""
 function create(v::AbstractVector{T}) where {T}
     dim = length(v)
 
@@ -23,8 +76,62 @@ function create(ρ::AbstractMatrix{T}) where {T}
     return c * ρ * c'
 end
 
+"""
+    QuantumStateBase.Annihilation(T; dim::Integer)
+
+Construct an annihilation operator in matrix form.
+
+``\\hat{a}``
+"""
 Annihilation(T; dim::Integer) = .√(diagm(1 => T.(Base.OneTo(dim-1))))
 
+"""
+    annihilate(s::AbstractArray{T})
+
+Apply annihilation operator on a quantum state.
+
+## Arguments
+
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
+
+## Examples
+
+```jldoctest
+julia> state = SinglePhotonState(dim=5)
+5-element Vector{Float64}:
+ 0.0
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> annihilate(state)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+```
+
+```jldoctest
+julia> state = SinglePhotonState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+
+julia> annihilate(state)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+```
+"""
 function annihilate(v::AbstractVector{T}) where {T}
     dim = length(v)
 
@@ -47,18 +154,41 @@ struct ComplexVec{T<:Real}
     θ::T
 end
 
+"""
+    QuantumStateBase.ComplexVec(r::T, θ::T)
+
+Construct a vector in polar coordinate for complex plane.
+
+``v = re^{-i\\theta}``
+
+## Arguments
+
+* `r`: Radius of the complex number.
+* `θ`: Argument of the complex number.
+"""
 ComplexVec(r::T, θ::T) where {T} = ComplexVec{T}(r, θ)
 
 function Base.show(io::IO, complexvec::ComplexVec{T}) where {T}
     print(io, "ComplexVec{$T}($(complexvec.r)exp(-$(complexvec.θ)im))")
 end
 
+"""
+    QuantumStateBase.z(complexvec::ComplexVec)
+
+Evaluate the complex vector.
+"""
 z(complexvec::ComplexVec) = complexvec.r * exp(-im * complexvec.θ)
 
 ################
 # displacement #
 ################
+"""
+    QuantumStateBase.Displacement(T::Type{<:Complex}, r::Real, θ::Real; dim::Integer)
 
+Construct a displacement operator in matrix form.
+
+``\\hat{D}(\\alpha) = exp(\\alpha \\hat{a}^{\\dagger} - \\alpha^{*} \\hat{a})``
+"""
 function Displacement(T::Type{<:Complex}, r::Real, θ::Real; dim)
     U = real(T)
     α = ComplexVec(U(r), U(θ))
@@ -68,6 +198,55 @@ function Displacement(T::Type{<:Complex}, r::Real, θ::Real; dim)
     )
 end
 
+"""
+    displace(s::AbstractArray{T}, r, θ)
+
+Apply displacement operator on a quantum state.
+
+## Arguments
+
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
+* `r`: Radius of displacement.
+* `θ`: Phase of displacement.
+
+## Examples
+
+```julia-repl
+julia> state = VacuumState(dim=5)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> displace(state, 2, π/4)
+5-element Vector{ComplexF64}:
+   0.14864196494651452 - 5.551115123125783e-17im
+   0.15309939720606983 - 0.15309939720606955im
+ 8.326672684688674e-17 - 0.5201876236174409im
+   -0.1359447277638306 - 0.13594472776383068im
+   -0.7896009204837534 - 3.0531133177191805e-16im
+```
+
+```julia-repl
+julia> state = VacuumState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+
+julia> displace(state, 2, π/4)
+5×5 Matrix{ComplexF64}:
+   0.0220944+0.0im              0.022757+0.022757im   4.12531e-17+0.0773217im    -0.0202071+0.0202071im    -0.117368+8.92137e-17im
+    0.022757-0.022757im        0.0468789+0.0im          0.0796404+0.0796404im  -2.42861e-17+0.0416261im    -0.120887+0.120887im
+ 4.12531e-17-0.0773217im       0.0796404-0.0796404im     0.270595+0.0im           0.0707168+0.0707168im  9.30717e-17+0.410741im
+  -0.0202071-0.0202071im    -2.42861e-17-0.0416261im    0.0707168-0.0707168im     0.0369619+0.0im           0.107342+0.107342im
+   -0.117368-8.92137e-17im     -0.120887-0.120887im   9.30717e-17-0.410741im       0.107342-0.107342im       0.62347+0.0im
+```
+"""
 function displace(v::AbstractVector{T}, r, θ) where {T}
     dim = length(v)
 
@@ -85,6 +264,18 @@ end
 # squeezing #
 #############
 
+"""
+    QuantumStateBase.Squeezing(T::Type{<:Complex}, r::Real, θ::Real; dim::Integer)
+
+Construct a squeezing operator in matrix form.
+
+## Arguments
+
+* `r`: Squeezing level.
+* `θ`: Squeezing phase.
+
+``\\hat{S}(\\xi) = exp(\\frac{1}{2}(\\xi^{*} \\hat{a}^{2} - \\xi \\hat{a}^{\\dagger 2}))``
+"""
 function Squeezing(T::Type{<:Complex}, r::Real, θ::Real; dim)
     U = real(T)
     ξ = ComplexVec(U(r), U(θ))
@@ -94,6 +285,55 @@ function Squeezing(T::Type{<:Complex}, r::Real, θ::Real; dim)
     )
 end
 
+"""
+    squeeze(s::AbstractArray{T})
+
+Apply squeezing operator on a quantum state.
+
+## Arguments
+
+* `s`: `s` can be a quantum state vector or a density matrix of a quantum state.
+* `r`: Squeezing level.
+* `θ`: Squeezing phase.
+
+## Examples
+
+```julia-repl
+julia> state = VacuumState(dim=5)
+5-element Vector{Float64}:
+ 1.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+
+julia> squeeze(state, 0.5, π/4)
+5-element Vector{ComplexF64}:
+     0.9419264274916698 + 0.0im
+                    0.0 + 0.0im
+   -0.21510388914370943 + 0.21510388914370937im
+                    0.0 + 0.0im
+ 3.0228557826221164e-17 - 0.1422506201859301im
+```
+
+```julia-repl
+julia> state = VacuumState(Matrix, dim=5)
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  0.0
+
+julia> squeeze(state, 0.5, π/4)
+5×5 Matrix{ComplexF64}:
+    0.887225+0.0im       0.0+0.0im   -0.202612-0.202612im   0.0+0.0im  2.84731e-17+0.13399im
+         0.0+0.0im       0.0+0.0im         0.0+0.0im        0.0+0.0im          0.0+0.0im
+   -0.202612+0.202612im  0.0+0.0im   0.0925394+0.0im        0.0+0.0im   -0.0305987-0.0305987im
+         0.0+0.0im       0.0+0.0im         0.0+0.0im        0.0+0.0im          0.0+0.0im
+ 2.84731e-17-0.13399im   0.0+0.0im  -0.0305987+0.0305987im  0.0+0.0im    0.0202352+0.0im
+```
+"""
 function squeeze(v::AbstractVector{T}, r, θ) where {T}
     dim = length(v)
 
