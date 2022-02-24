@@ -55,6 +55,27 @@ function create_wigner(
     return 𝐰
 end
 
+"""
+    WignerFunction
+
+`WignerFunction` to calculate Wigner function for a quantum state in gevin `x` and `p` range.
+
+## Arguments
+
+* `x_range`: First physical domain range in phase space.
+* `p_range`: Second physical domain range in phase space.
+* `dim`: Photon number truncation of the quantum state.
+
+## Example
+
+```jldoctest
+julia> xs = -1:0.1:1; ps = -1:0.1:1; dim=35;
+
+julia> wf = WignerFunction(xs, ps, dim=dim);
+
+julia> wf(VacuumState(Matrix, dim=dim))
+```
+"""
 mutable struct WignerFunction{T<:Integer, U<:AbstractRange}
     𝐰::Array{ComplexF64,4}
     x_range::U
@@ -103,6 +124,25 @@ end
 
 # TODO: (wf::WignerFunction)(state::StateVector) = wf(ρ(state))
 
+"""
+    wigner(ρ::AbstractMatrix{T}, x_range::AbstractRange, p_range::AbstractRange)
+
+Calculate the Wigner fuction of the quantum state in the gevin `x` and `p` range.
+
+## Arguments
+
+* `ρ`: Density matrix of a quantum state.
+* `x_range`: First physical domain range in phase space.
+* `p_range`: Second physical domain range in phase space.
+
+## Example
+
+```jldoctest
+julia> xs = -1:0.1:1; ps = -1:0.1:1;
+
+julia> wigner(VacuumState(Matrix, dim=35), xs, ps);
+```
+"""
 function wigner(ρ::AbstractMatrix{T}, x_range::AbstractRange, p_range::AbstractRange) where {T}
     dim = size(ρ, 1)
     wf = WignerFunction(x_range, p_range, dim=dim)
