@@ -68,12 +68,12 @@ end
 
 ## Example
 
-```jldoctest
+```julia-repl
 julia> xs = -1:0.1:1; ps = -1:0.1:1; dim=35;
 
 julia> wf = WignerFunction(xs, ps, dim=dim);
 
-julia> wf(VacuumState(Matrix, dim=dim))
+julia> wf(VacuumState(Matrix, dim=dim));
 ```
 """
 mutable struct WignerFunction{T<:Integer, U<:AbstractRange}
@@ -137,7 +137,7 @@ Calculate the Wigner fuction of the quantum state in the gevin `x` and `p` range
 
 ## Example
 
-```jldoctest
+```julia-repl
 julia> xs = -1:0.1:1; ps = -1:0.1:1;
 
 julia> wigner(VacuumState(Matrix, dim=35), xs, ps);
