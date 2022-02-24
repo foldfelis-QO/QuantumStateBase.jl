@@ -22,11 +22,9 @@ pkg> add QuantumStateBase
 ```julia
 julia> using QuantumStateBase, Plots
 
-julia> state = SqueezedThermalState(ξ(0.5, 3π/2), 0.3);
+julia> state = SqueezedThermalState(0.5, 3π/2, 0.3, dim=35);
 
-julia> wf = WignerFunction(-10:0.1:10, -10:0.1:10);
-
-julia> w = wf(state);
+julia> w = wigner(state, LinRange(-3, 3, 101), LinRange(-3, 3, 101));
 
 julia> heatmap(w.x_range, w.p_range,  w.𝐰_surface')
 ```
@@ -35,31 +33,39 @@ julia> heatmap(w.x_range, w.p_range,  w.𝐰_surface')
 <img src="assets/squeezed_thermal_heatmap.png" width="50%"/>
 ```
 
-### Plot quadrature probability density function of the state
+## Wigner function
 
-```julia
-julia> θs = LinRange(0, 2π, 100);
+Wigner function is introduced by Eugene Winger, who describe quantum state using revised classical probability theory.
 
-julia> xs = LinRange(-10, 10, 100);
+The quasi probability distribution is defined as:
 
-julia> ps = q_pdf(state, θs, xs);
-
-julia> heatmap(θs, xs, ps')
+```math
+W_{mn}(x, p) = \frac{1}{2\pi} \int_{-\infty}^{\infty} dy \, e^{-ipy/h} \psi_m^*(x+\frac{y}{2}) \psi_n(x-\frac{y}{2})
 ```
 
-```@raw html
+Owing to the fact that the Moyal function is a generalized Wigner function. We can therefore implies that
 
-<img src="assets/squeezed_thermal_quad.png" width="50%"/>
+```math
+W(x, p) = \sum_{m, n} \rho_{m, n} W_{m, n}(x, p)
 ```
 
-### Sample points from quadrature PDF of the state
+Here, ``\rho`` is the density matrix of the quantum state, defined as:
 
-```julia
-julia> points = rand(state, 4096);
-
-julia> scatter(points[1, :], points[2, :])
+```math
+\rho = \sum_{m, n, i} \, p_i \, | n \rangle \langle n | \hat{\rho}_i | m \rangle \langle m |
+```
+```math
+\hat{\rho}_i = | \psi_i \rangle \langle \psi_i |
+```
+```math
+\hat{\rho}_i \, \text{is a density operator of pure state.}
 ```
 
-```@raw html
-<img src="assets/squeezed_thermal_sampled.png" width="50%"/>
+And, ``W_{m, n}(x, p)`` is the generalized Wigner function
+
+```math
+W_{m, n} = \{ \begin{array}{rcl}
+\frac{1}{\pi} exp[-(x^2 + y^2)] (-1)^m  \sqrt{2^{n-m} \frac{m!}{n!}} (x-ip)^{n-m} L_m^{n-m} (2x^2 + 2p^2), \, n \geq m \\
+\frac{1}{\pi} exp[-(x^2 + y^2)] (-1)^n  \sqrt{2^{m-n} \frac{n!}{m!}} (x+ip)^{m-n} L_n^{m-n} (2x^2 + 2p^2), \, n < m \\
+\end{array}
 ```
