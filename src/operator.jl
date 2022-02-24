@@ -307,7 +307,7 @@ julia> state = VacuumState(Matrix, dim=5)
  0.0  0.0  0.0  0.0  0.0
  0.0  0.0  0.0  0.0  0.0
 
-julia> squeeze(state, 0.5, π/4) |> x->round.(x, sigdigits=5)
+julia> squeeze(state, 0.5, π/4) |> x->round.(x, sigdigits=3)
 5×5 Matrix{ComplexF64}:
 │     0.88723+0.0im      0.0+0.0im  …  0.0+0.0im  2.8473e-17+0.13399im
 │         0.0+0.0im      0.0+0.0im     0.0+0.0im         0.0+0.0im
