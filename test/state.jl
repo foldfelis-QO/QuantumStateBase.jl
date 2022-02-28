@@ -72,7 +72,7 @@ end
 end
 
 @testset "mixed state" begin
-    ρ = diagm(QSB.bose_einstein(0.3).(Float64.(0:DIM)))
+    ρ = diagm(QSB.bose_einstein(0.3).(Float64.(0:DIM-1)))
     @test ThermalState(Float64, 0.3, dim=DIM) == ρ
     @test ThermalState(0.3, dim=DIM) == ρ
 
