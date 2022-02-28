@@ -156,7 +156,7 @@ Bose-Einstein distribution.
 * `n̄`: Average photon number at a certain temperature.
 * `dim`: Maximum photon number for truncate.
 """
-ThermalState(T::Type{<:Number}, n̄; dim) = diagm(bose_einstein(n̄).(T.(0:dim)))
+ThermalState(T::Type{<:Number}, n̄; dim) = diagm(bose_einstein(n̄).(T.(0:dim-1)))
 
 ThermalState(n̄; dim) = ThermalState(Float64, n̄, dim=dim)
 
