@@ -66,7 +66,7 @@ function save_𝐰(bin_name::String, 𝐰::Array{ComplexF64,4})
     end
     bind_my_artifact!(my_artifacts[], bin_name, hash)
 
-    @info "Save Wₘₙₓₚ to $bin_name"
+    # @info "Save Wₘₙₓₚ to $bin_name"
 
     return my_artifact_path(hash)
 end
@@ -85,7 +85,7 @@ function load_𝐰(
     )
     close(mem)
 
-    @info "Load Wₘₙₓₚ from $bin_path"
+    # @info "Load Wₘₙₓₚ from $bin_path"
 
     return 𝐰
 end
