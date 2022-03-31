@@ -10,7 +10,7 @@ Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
 OhMyArtifacts = "cf8be1f4-309d-442e-839d-29d2a0af6cb7"
 
 [compat]
-ClassicalOrthogonalPolynomials = "0.6"
+ClassicalOrthogonalPolynomials = "0.5, 0.6"
 OhMyArtifacts = "0.2"
 julia = "1.6"
 
